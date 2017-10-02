@@ -8,7 +8,7 @@
 import Foundation
 import XCTest
 @testable import MongoKitten
-@testable import KeepinAPI
+@testable import KeepinServices
 
 class ServicesTests: XCTestCase {
 
