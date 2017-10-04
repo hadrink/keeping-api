@@ -1,15 +1,21 @@
 import MongoKitten
 import Foundation
 
+/// Users Services.
 struct UsersServices: Services {
     static let db = try? KIEnvironment.prod.database()
     static var collection = db?[KICollections.users.rawValue]
 
-    static func getUsersDocumentBy(name: String) -> CollectionSlice<Document>? {
+    /**
+     Get user document by principal.
+     - parameter principal: The user principal (String).
+     - returns: The user document (Document?).
+     */
+    static func getUserDocumentBy(principal: String) -> Document? {
         do {
-            return try collection?.find("Name" == name)
+            return try collection?.findOne("principal" == principal)
         } catch let e {
-            print("Get user by name error: \(e)")
+            print("Get user by principal error: \(e)")
             return nil
         }
     }

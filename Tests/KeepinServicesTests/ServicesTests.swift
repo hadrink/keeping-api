@@ -11,7 +11,6 @@ import XCTest
 @testable import KeepinServices
 
 class ServicesTests: XCTestCase {
-
     var db: Database?
     var collection: MongoKitten.Collection?
 
@@ -20,7 +19,6 @@ class ServicesTests: XCTestCase {
 
         self.db = try? KIEnvironment.prod.database()
         self.collection = db?[KICollections.users.rawValue]
-
     }
 
     /**
