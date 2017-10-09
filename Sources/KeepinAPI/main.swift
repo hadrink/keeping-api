@@ -13,8 +13,6 @@ let host = drop.config["server", "host"]?.string ?? "0.0.0.0"
 // will load 9000, or environment variable port.
 let port = drop.config["server", "port"]?.int ?? 8080
 
-drop.get("hello") { req in
-    return "Hello Vapor"
-}
 
-try drop.run()
+let userRoutes = UsersRoutes()
+Router.run(drop: drop, from: [userRoutes])
