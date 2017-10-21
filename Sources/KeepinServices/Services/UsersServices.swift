@@ -1,3 +1,9 @@
+//
+//  UsersServices.swift
+//  KeepinServices
+//
+//  Created by Rplay on 01/10/2017.
+//
 import MongoKitten
 import Foundation
 
@@ -7,15 +13,15 @@ struct UsersServices: Services {
     static var collection = db?[KICollections.users.rawValue]
 
     /**
-     Get user document by principal.
-     - parameter principal: The user principal (String).
+     Get user document by username.
+     - parameter principal: The username (String).
      - returns: The user document (Document?).
      */
-    static func getUserDocumentBy(principal: String) -> Document? {
+    static func getUserDocumentBy(username: String) -> Document? {
         do {
-            return try collection?.findOne("principal" == principal)
+            return try collection?.findOne("username" == username)
         } catch let e {
-            print("Get user by principal error: \(e)")
+            print("Get user by username error: \(e)")
             return nil
         }
     }

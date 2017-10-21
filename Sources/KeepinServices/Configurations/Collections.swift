@@ -1,3 +1,9 @@
+//
+//  Collections.swift
+//  KeepinServices
+//
+//  Created by Rplay on 01/10/2017.
+//
 import Foundation
 
 // Database collections.

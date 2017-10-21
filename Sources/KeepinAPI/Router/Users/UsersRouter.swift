@@ -1,6 +1,6 @@
 //
 //  Users.swift
-//  KeepinAPIPackageDescription
+//  KeepinAPI
 //
 //  Created by Rplay on 09/10/2017.
 //
