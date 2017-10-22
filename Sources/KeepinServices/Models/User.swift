@@ -6,30 +6,51 @@
 //
 import Foundation
 import MongoKitten
+import BCrypt
 
-enum UserError: Error {
+/// User error
+public enum UserError: Error {
     case usernameAlreadyExist(message: String)
 }
 
-final class User {
+/// User object
+public final class User {
+
+    /**
+     Username (String).
+     */
     var username: String
+
+    /**
+     Password (String).
+     */
     var password: String
 
-    init(username: String, password: String) {
+    /**
+     Init user object.
+
+     - parameter username: The username (String).
+     - parameter password: The password (String).
+     */
+    public init(username: String, password: String) {
         self.username = username
         self.password = password
     }
-    
-    func create() throws {
+
+    /**
+     Insert user in database.
+     */
+    public func create() throws {
         let existingUser = UsersServices.getUserDocumentBy(username: self.username)
         guard existingUser == nil else {
             let message = "Username \(self.username) already exist"
             throw UserError.usernameAlreadyExist(message: message)
         }
 
+        let passwordHash = try BCrypt.Hash.make(message: self.password)
         let userDocument: Document = [
-            "username":  self.username,
-            "password": self.password
+            "username": self.username,
+            "password": passwordHash.makeString()
         ]
 
         UsersServices.create(document: userDocument)

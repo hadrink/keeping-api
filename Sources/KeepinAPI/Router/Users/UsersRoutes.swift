@@ -13,7 +13,7 @@ protocol Routes {
     func build(with drop: Droplet)
 }
 
-class UsersRoutes: Routes {
+final class UsersRoutes: Routes {
     func build(with drop: Droplet) {
         drop.get("user") { req in
             return "Hello user router"
