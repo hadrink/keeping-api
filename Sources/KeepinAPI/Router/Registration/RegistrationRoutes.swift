@@ -7,6 +7,7 @@
 
 import Foundation
 import Vapor
+import KeepinServices
 
 /// Registration routes.
 final class RegistationRoutes: Routes {
