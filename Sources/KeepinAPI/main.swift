@@ -24,4 +24,7 @@ let port = drop.config["server", "port"]?.int ?? 8080
 
 let userRoutes = UsersRoutes()
 let registrationRoutes = RegistationRoutes()
-Router.run(drop: drop, from: [userRoutes, registrationRoutes])
+let userController = UserController()
+drop.resource(User.uniqueSlug, userController)
+try drop.run()
+//Router.run(drop: drop, from: [userRoutes, registrationRoutes])
