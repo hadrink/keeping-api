@@ -35,27 +35,23 @@ public final class User {
      - parameter username: The username (String).
      - parameter password: The password (String?).
      */
-    public init(username: String, password: String) {
+    public init(username: String, password: String? = nil) {
         self.username = username
         self.password = password
-    }
-
-    public init(username: String) {
-        self.username = username
     }
 
     /**
      Insert user in database.
      */
-    public func create() throws {
+    public func create() throws -> ResponseRepresentable {
         let existingUser = try? UsersServices.getUserDocumentBy(username: self.username)
         guard existingUser == nil else {
-            let message = "Username \(self.username) already exist"
-            throw UserError.usernameAlreadyExist(message: message)
+            let reason = "Username \(self.username) already exist"
+            throw Abort(.unauthorized, reason: reason)
         }
 
         guard let password = self.password else {
-            throw UserError.passwordIsMissing(message: "Password is missing.")
+             throw Abort(.unauthorized, reason: "Password is missing.")
         }
 
         let passwordHash = try BCrypt.Hash.make(message: password)
@@ -65,6 +61,8 @@ public final class User {
         ]
 
         UsersServices.create(document: userDocument)
+        let newDocument = try UsersServices.getUserDocumentBy(username: self.username)
+        return newDocument!.makeExtendedJSONString()
     }
 
     /**
@@ -73,14 +71,13 @@ public final class User {
     public func get() throws -> ResponseRepresentable {
         do {
             guard let userDocument = try UsersServices.getUserDocumentBy(username: self.username) else {
-                let message = ["error" : "\(self.username) not found."]
-                return try JSON(node: message)
+                throw Abort(.notFound, reason: "\(self.username) not found.")
             }
 
             return userDocument.makeExtendedJSONString()
         } catch ServicesErrors.getUserFailed {
-            let message = ["error" : "A problem is occured when we try to get the user \(self.username)."]
-            return try JSON(node: message)
+            let reason = "A problem is occured when we try to get the user \(self.username)."
+            throw Abort(.internalServerError, reason: reason)
         }
     }
 }

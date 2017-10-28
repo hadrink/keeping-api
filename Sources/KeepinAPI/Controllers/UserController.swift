@@ -15,12 +15,25 @@ final class UserController {
     }
 
     /**
-     Get JSON response (Need test).
+     TODO: TEST.
+     Get JSON response.
      - parameter req: The HTTP request (Request).
      - parameter user: The user (User).
+     - returns: A ResponseReprentable object.
      */
     func show(_ req: Request, user: User) throws -> ResponseRepresentable {
         return try user.get()
+    }
+
+    /**
+     TODO: TEST.
+     Create a user from a JSON.
+     - parameter req: The HTTP request (Request).
+     - returns: A ResponseReprentable object.
+     */
+    func create(_ req: Request) throws -> ResponseRepresentable {
+        let user = try req.makeUser()
+        return try user.create()
     }
 }
 
@@ -33,7 +46,28 @@ extension UserController: ResourceRepresentable {
     func makeResource() -> Resource<User> {
         return Resource(
             index: index,
+            create: create,
             show: show
         )
+    }
+}
+
+extension Request {
+
+    /**
+     Create user from Request.
+     */
+    func makeUser() throws -> User {
+        guard let json = self.json else { throw Abort.badRequest }
+
+        guard let username = json["username"]?.string else {
+            throw Abort(.badRequest, reason: "Missing username.")
+        }
+
+        guard let password = json["password"]?.string else {
+            throw Abort(.badRequest, reason: "Missing username.")
+        }
+
+        return User(username: username, password: password)
     }
 }
