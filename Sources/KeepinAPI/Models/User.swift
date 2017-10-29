@@ -44,25 +44,20 @@ public final class User {
      Insert user in database.
      */
     public func create() throws -> ResponseRepresentable {
-        let existingUser = try? UsersServices.getUserDocumentBy(username: self.username)
+        let existingUser = try UsersServices.getUserDocumentBy(username: self.username)
         guard existingUser == nil else {
             let reason = "Username \(self.username) already exist"
             throw Abort(.unauthorized, reason: reason)
         }
 
-        guard let password = self.password else {
-             throw Abort(.unauthorized, reason: "Password is missing.")
-        }
-
-        let passwordHash = try BCrypt.Hash.make(message: password)
+        let passwordHash = try BCrypt.Hash.make(message: self.password!)
         let userDocument: Document = [
             "username": self.username,
             "password": passwordHash.makeString()
         ]
 
         UsersServices.create(document: userDocument)
-        let newDocument = try UsersServices.getUserDocumentBy(username: self.username)
-        return newDocument!.makeExtendedJSONString()
+        return try self.get()
     }
 
     /**
