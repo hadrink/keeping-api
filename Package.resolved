@@ -2,6 +2,24 @@
   "object": {
     "pins": [
       {
+        "package": "Auth",
+        "repositoryURL": "https://github.com/vapor/auth.git",
+        "state": {
+          "branch": null,
+          "revision": "b8a0d6d7ac141831c999bf2458408dc2ec2edb39",
+          "version": "1.2.1"
+        }
+      },
+      {
+        "package": "AuthProvider",
+        "repositoryURL": "https://github.com/vapor/auth-provider.git",
+        "state": {
+          "branch": null,
+          "revision": "c8a89d5f32873a7ec6037e2c78a192526c496618",
+          "version": "1.2.0"
+        }
+      },
+      {
         "package": "BCrypt",
         "repositoryURL": "https://github.com/vapor/bcrypt.git",
         "state": {
@@ -15,8 +33,8 @@
         "repositoryURL": "https://github.com/OpenKitten/BSON.git",
         "state": {
           "branch": null,
-          "revision": "dfb2efc4187ca2b5eeecc717c5031e40137e805d",
-          "version": "5.2.1"
+          "revision": "3edad325da31095c9d54d04c6125f1fec1f3c5bf",
+          "version": "5.2.3"
         }
       },
       {
@@ -42,8 +60,8 @@
         "repositoryURL": "https://github.com/OpenKitten/Cheetah.git",
         "state": {
           "branch": null,
-          "revision": "c1807309fbcbeccb10d7e39d5222511e6b2b6651",
-          "version": "2.0.0"
+          "revision": "801f4fa278670719bec074b708241878ad5fb25e",
+          "version": "2.0.2"
         }
       },
       {
@@ -101,12 +119,39 @@
         }
       },
       {
+        "package": "Fluent",
+        "repositoryURL": "https://github.com/vapor/fluent.git",
+        "state": {
+          "branch": null,
+          "revision": "9f94af35b177b5a5fdc40a81703e68c072c5013d",
+          "version": "2.4.1"
+        }
+      },
+      {
         "package": "JSON",
         "repositoryURL": "https://github.com/vapor/json.git",
         "state": {
           "branch": null,
           "revision": "735800d8f2e75ebe3be25559eb6a781f4666dcfc",
           "version": "2.2.1"
+        }
+      },
+      {
+        "package": "JWT",
+        "repositoryURL": "https://github.com/vapor/jwt.git",
+        "state": {
+          "branch": null,
+          "revision": "84f4cabfa702208bddfd93cd76df88df9e6ef4ef",
+          "version": "2.3.0"
+        }
+      },
+      {
+        "package": "JWTProvider",
+        "repositoryURL": "https://github.com/vapor/jwt-provider.git",
+        "state": {
+          "branch": null,
+          "revision": "f648dd6814970d9c7b27b79e9ce62699561d8d14",
+          "version": "1.3.0"
         }
       },
       {
@@ -123,8 +168,8 @@
         "repositoryURL": "https://github.com/vapor/multipart.git",
         "state": {
           "branch": null,
-          "revision": "f32d0952b8d4dfcef5ea194e85c1968d90f97bf0",
-          "version": "2.1.0"
+          "revision": "8e541b2e6fc64a3741eca2aa48ee2c3f23cbe17c",
+          "version": "2.1.1"
         }
       },
       {
@@ -155,6 +200,15 @@
         }
       },
       {
+        "package": "SQLite",
+        "repositoryURL": "https://github.com/vapor/sqlite.git",
+        "state": {
+          "branch": null,
+          "revision": "9aceb6a0d7b1698a557647493bd78b030dad468b",
+          "version": "2.3.1"
+        }
+      },
+      {
         "package": "Schrodinger",
         "repositoryURL": "https://github.com/OpenKitten/Schrodinger.git",
         "state": {
@@ -168,8 +222,8 @@
         "repositoryURL": "https://github.com/vapor/sockets.git",
         "state": {
           "branch": null,
-          "revision": "f6b06982e94db71227e99c56fec5899a8526e8ad",
-          "version": "2.1.0"
+          "revision": "70d14c0e223257176f5ef69a595f7cad5de7a88b",
+          "version": "2.2.1"
         }
       },
       {
@@ -186,8 +240,8 @@
         "repositoryURL": "https://github.com/qutheory/vapor.git",
         "state": {
           "branch": null,
-          "revision": "59bde985edbdf6480c541485317c8d41cc5fefb7",
-          "version": "2.2.2"
+          "revision": "0747ab4819f90c9be451847f80a153184526ad79",
+          "version": "2.3.0"
         }
       }
     ]

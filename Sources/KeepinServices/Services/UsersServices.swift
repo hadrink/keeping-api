@@ -17,8 +17,16 @@ public struct UsersServices: Services {
      - parameter principal: The username (String).
      - returns: The user document (Document?).
      */
-    public static func getUserDocumentBy(username: String) throws -> Document? {
+    public static func getUserDocumentBy(
+        username: String,
+        excludedKeys: Projection = ["_id": .excluded, "password": .excluded],
+        allKeys: Bool = false
+    ) throws -> Document? {
         do {
+            guard allKeys else {
+                return try collection.findOne("username" == username, projecting: excludedKeys)
+            }
+
             return try collection.findOne("username" == username)
         } catch let e {
             print("Get user by username error: \(e)")

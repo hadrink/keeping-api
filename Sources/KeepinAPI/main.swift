@@ -9,12 +9,20 @@
 // Find a way to add a flag during the compilation.
 // For example: swift build -c debug -Xswiftc -DQA
 import Vapor
+import AuthProvider
+import JWTProvider
 
 #if QA
 print("hello, world");
 #endif
 
-let drop = try Droplet()
+let config = try Config()
+try config.addProvider(AuthProvider.Provider.self)
+try config.addProvider(JWTProvider.Provider.self)
+let drop = try Droplet(config)
+try drop.collection(MainRoutes(drop))
+
+Node.fuzzy = [JSON.self, Node.self]
 
 // will load 0.0.0.0 or 127.0.0.1 based on above config
 let host = drop.config["server", "host"]?.string ?? "0.0.0.0"
@@ -22,9 +30,9 @@ let host = drop.config["server", "host"]?.string ?? "0.0.0.0"
 let port = drop.config["server", "port"]?.int ?? 8080
 
 
-let userRoutes = UsersRoutes()
-let registrationRoutes = RegistationRoutes()
-let userController = UserController()
+//let userRoutes = UsersRoutes()
+//let registrationRoutes = RegistationRoutes()
+let userController = UserController(drop)
 drop.resource(User.uniqueSlug, userController)
 try drop.run()
 //Router.run(drop: drop, from: [userRoutes, registrationRoutes])
