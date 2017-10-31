@@ -80,7 +80,9 @@ public final class User {
     }
 }
 
+/// User extension type of Parameterizable.
 extension User: Parameterizable {
+
     public static var uniqueSlug: String {
         return "users"
     }
@@ -90,7 +92,9 @@ extension User: Parameterizable {
     }
 }
 
+/// User extension type of PasswordAuthenticatable.
 extension User: PasswordAuthenticatable {
+
     public static func authenticate(_ creds: Password) throws -> User {
         let userDoc = try UsersServices.getUserDocumentBy(
             username: creds.username,
@@ -113,7 +117,11 @@ extension User: PasswordAuthenticatable {
     }
 }
 
+/// User extension type of TokenAuthenticatable.
 extension User: TokenAuthenticatable {
+
+    public typealias TokenType = Token
+
     public static func authenticate(_ token: Token) throws -> User {
         let jwt = try JWT(token: token.string)
         try jwt.verifySignature(using: HS256(key: "SIGNING_KEY".makeBytes()))
@@ -124,29 +132,13 @@ extension User: TokenAuthenticatable {
 
         return User(username: userId)
     }
-
-    public typealias TokenType = Token
 }
 
-public class Claims: JSONInitializable {
-    var subjectClaimValue : String
-    var expirationTimeClaimValue : Double
-    public required init(json: JSON) throws {
-        guard let subjectClaimValue = try json.get(SubjectClaim.name) as String? else {
-            throw AuthenticationError.invalidCredentials
-        }
-        self.subjectClaimValue = subjectClaimValue
-
-        guard let expirationTimeClaimValue = try json.get(ExpirationTimeClaim.name) as String? else {
-            throw AuthenticationError.invalidCredentials
-        }
-        self.expirationTimeClaimValue = Double(expirationTimeClaimValue)!
-
-    }
-}
-
+/// User extension type of PayloadAuthenticatable.
 extension User: PayloadAuthenticatable {
+
     public typealias PayloadType = Claims
+
     public static func authenticate(_ payload: Claims) throws -> User {
         if payload.expirationTimeClaimValue < Date().timeIntervalSince1970 {
             throw AuthenticationError.invalidCredentials
@@ -155,11 +147,5 @@ extension User: PayloadAuthenticatable {
         let userId = payload.subjectClaimValue
 
         return User(username: userId)
-    }
-}
-
-extension Request {
-    func user() throws -> User {
-        return try auth.assertAuthenticated()
     }
 }
