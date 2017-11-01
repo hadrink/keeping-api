@@ -17,22 +17,13 @@ print("hello, world");
 #endif
 
 let config = try Config()
-try config.addProvider(AuthProvider.Provider.self)
-try config.addProvider(JWTProvider.Provider.self)
+try config.setup()
 let drop = try Droplet(config)
-try drop.collection(MainRoutes(drop))
-
-Node.fuzzy = [JSON.self, Node.self]
+try drop.setup()
 
 // will load 0.0.0.0 or 127.0.0.1 based on above config
 let host = drop.config["server", "host"]?.string ?? "0.0.0.0"
 // will load 9000, or environment variable port.
 let port = drop.config["server", "port"]?.int ?? 8080
 
-
-//let userRoutes = UsersRoutes()
-//let registrationRoutes = RegistationRoutes()
-let userController = UserController(drop)
-drop.resource(User.uniqueSlug, userController)
 try drop.run()
-//Router.run(drop: drop, from: [userRoutes, registrationRoutes])

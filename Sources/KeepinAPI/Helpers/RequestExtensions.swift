@@ -14,7 +14,7 @@ extension Request {
      Create user from Request.
      - returns: A user.
      */
-    func makeUser() throws -> User {
+    public func makeUser() throws -> User {
         guard let json = self.json else { throw Abort.badRequest }
 
         guard let username = json["username"]?.string else {
@@ -32,7 +32,7 @@ extension Request {
      Get user from the JWT Token.
      - returns: A user.
      */
-    func user() throws -> User {
+    public func user() throws -> User {
         return try auth.assertAuthenticated()
     }
 }
