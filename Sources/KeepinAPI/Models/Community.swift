@@ -7,9 +7,10 @@
 
 import Foundation
 import Vapor
+import KeepinServices
 
 /// Community object.
-final class Community {
+public final class Community {
 
     /**
      The community name (String).
@@ -19,21 +20,36 @@ final class Community {
     /**
      The community owner (User).
      */
-    var owner: User?
+    var admin: User?
 
     /**
-     Init user object.
+     Init community object.
 
      - parameter name: The community name (String).
      - parameter owner: The password (String?).
      */
-    public init(name: String, owner: User? = nil) {
+    public init(name: String, admin: User? = nil) {
         self.name = name
-        self.owner = owner
+        self.admin = admin
     }
 
-    func get() -> ResponseRepresentable {
-        return JSON()
+    /**
+     TODO: TEST.
+     Get Community.
+
+     - returns: A JSON String response.
+     */
+    public func get() throws -> ResponseRepresentable {
+        do {
+            guard let communityDocument = try CommunityServices.getCommunityBy(name: self.name) else {
+                throw Abort(.notFound, reason: "\(self.name) not found.")
+            }
+
+            return communityDocument.makeExtendedJSONString()
+        } catch ServicesErrors.getCommunityFailed {
+            let reason = "A problem is occured when we try to get the community \(self.name)."
+            throw Abort(.internalServerError, reason: reason)
+        }
     }
 }
 

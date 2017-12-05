@@ -9,7 +9,7 @@ import Foundation
 import MongoKitten
 
 /// Community services.
-struct CommunityServices: Services {
+public struct CommunityServices: Services {
     static let db = try! KIEnvironment.prod.database()
     static var collection = db[KICollections.communities.rawValue]
 
@@ -19,7 +19,7 @@ struct CommunityServices: Services {
      - parameter name: The community name (String).
      - parameter excludedKeys: Keys not to go up (Projection?)
      */
-    static func getCommunityBy(
+    public static func getCommunityBy(
         name: String,
         excludedKeys: Projection? = ["_id": .excluded]
     ) throws -> Document? {

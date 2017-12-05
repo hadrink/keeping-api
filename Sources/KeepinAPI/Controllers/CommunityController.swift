@@ -8,7 +8,7 @@
 import Vapor
 
 /// Community Controller
-final class CommunityController {
+struct CommunityController {
 
     /**
      TODO: TEST.

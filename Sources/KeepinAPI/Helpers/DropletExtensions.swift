@@ -16,8 +16,11 @@ extension Droplet {
      */
     public func setup() throws {
         try collection(MainRoutes(self))
-        let userController = UserController(drop)
-        resource(User.uniqueSlug, userController)
+        let userController = UserController(droplet: drop)
+        let communityController = CommunityController()
+
+        self.resource(User.uniqueSlug, userController)
+        self.resource(Community.uniqueSlug, communityController)
     }
 
     /**
@@ -26,7 +29,7 @@ extension Droplet {
      - returns: A token JWT (String).
      */
     public func createJwtToken(_ username: String)  throws -> String {
-        let timeToLive = 5 * 60.0 // 5 minutes
+        let timeToLive = 60.0 * 60.0 // 1h
         let claims:[Claim] = [
             ExpirationTimeClaim(date: Date().addingTimeInterval(timeToLive)),
             SubjectClaim(string: username)

@@ -10,12 +10,9 @@ import AuthProvider
 import JWT
 
 /// User Controller
-final class UserController {
+struct UserController {
 
     let droplet: Droplet
-    init(_ droplet: Droplet) {
-        self.droplet = droplet
-    }
 
     /**
      TODO: TEST.
