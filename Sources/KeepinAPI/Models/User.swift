@@ -47,7 +47,7 @@ public final class User {
      Insert user in database.
      */
     public func create() throws -> ResponseRepresentable {
-        let existingUser = try UsersServices.getUserDocumentBy(username: self.username)
+        let existingUser = try UsersServices.read(by: "username", value: self.username)
         guard existingUser == nil else {
             let reason = "Username \(self.username) already exist"
             throw Abort(.unauthorized, reason: reason)
@@ -68,12 +68,16 @@ public final class User {
      */
     public func get() throws -> ResponseRepresentable {
         do {
-            guard let userDocument = try UsersServices.getUserDocumentBy(username: self.username) else {
+            guard let userDocument = try UsersServices.read(
+                by: "username",
+                value: self.username,
+                projection: ["_id": .excluded, "password": .excluded]
+            ) else {
                 throw Abort(.notFound, reason: "\(self.username) not found.")
             }
 
             return userDocument.makeExtendedJSONString()
-        } catch ServicesErrors.getUserFailed {
+        } catch ServicesErrors.read {
             let reason = "A problem is occured when we try to get the user \(self.username)."
             throw Abort(.internalServerError, reason: reason)
         }
@@ -96,10 +100,7 @@ extension User: Parameterizable {
 extension User: PasswordAuthenticatable {
 
     public static func authenticate(_ creds: Password) throws -> User {
-        let userDoc = try UsersServices.getUserDocumentBy(
-            username: creds.username,
-            allKeys: true
-        )
+        let userDoc = try UsersServices.read(by: "username", value: creds.username, projection: nil)
 
         guard let userFound = userDoc else {
             throw Abort(.notFound, reason: "\(creds.username) not found.")

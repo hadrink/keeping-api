@@ -11,26 +11,4 @@ import Foundation
 public struct UsersServices: Services {
     static let db = try! KIEnvironment.prod.database()
     static var collection = db[KICollections.users.rawValue]
-
-    /**
-     Get user document by username.
-     - parameter principal: The username (String).
-     - returns: The user document (Document?).
-     */
-    public static func getUserDocumentBy(
-        username: String,
-        excludedKeys: Projection = ["_id": .excluded, "password": .excluded],
-        allKeys: Bool = false
-    ) throws -> Document? {
-        do {
-            guard allKeys else {
-                return try collection.findOne("username" == username, projecting: excludedKeys)
-            }
-
-            return try collection.findOne("username" == username)
-        } catch let e {
-            print("Get user by username error: \(e)")
-            throw ServicesErrors.getUserFailed
-        }
-    }
 }

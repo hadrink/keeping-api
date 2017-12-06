@@ -28,8 +28,12 @@ struct CommunityController {
      - returns: A ResponseReprentable object.
      */
     func store(_ req: Request) throws -> ResponseRepresentable {
-        let user = try req.makeUser()
-        return try user.create()
+        guard let name = req.data["name"]?.string else {
+            throw Abort(.badRequest, reason: "Missing name")
+        }
+
+        let user = try req.user()
+        return try Community(name: name, admin: user).create()
     }
 }
 
