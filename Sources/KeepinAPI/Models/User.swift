@@ -82,6 +82,19 @@ public final class User {
             throw Abort(.internalServerError, reason: reason)
         }
     }
+
+    /**
+     Get community subscriptions.
+     */
+    public func getCommunities() throws -> ResponseRepresentable {
+        do {
+            let commmunitiesCollection = try CommunityServices.getCommnunitiesBy(subscriber: self.username)
+            return commmunitiesCollection.makeExtendedJSONString()
+        } catch ServicesErrors.getCommunities {
+            let reason = "A problem is occured we try to get \(self.username) communities)"
+            throw Abort(.internalServerError, reason: reason)
+        }
+    }
 }
 
 /// User extension type of Parameterizable.

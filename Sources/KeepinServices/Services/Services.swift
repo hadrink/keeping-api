@@ -11,6 +11,7 @@ import MongoKitten
 public enum ServicesErrors: Error {
     case read
     case subscribe
+    case getCommunities
 }
 
 /// Services protocol.
