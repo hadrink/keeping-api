@@ -10,6 +10,7 @@ import MongoKitten
 /// Services errors.
 public enum ServicesErrors: Error {
     case read
+    case subscribe
 }
 
 /// Services protocol.
