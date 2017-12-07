@@ -16,26 +16,33 @@ final class MainRoutes: RouteCollection {
         self.droplet = droplet
     }
     func build(_ builder: RouteBuilder) throws {
-        let api = builder.grouped("api")
-        let v1 = api.grouped("v1")
+        // Middlewares
+        let errorMiddleware = try ErrorMiddleware(config: droplet.config)
+        let tokenMiddleware = PayloadAuthenticationMiddleware(try self.droplet.assertSigner(),[], User.self)
 
+        // Controllers
         let userController = UserController(droplet: self.droplet)
         let communityController = CommunityController()
 
+        // Builders
+        let api = builder.grouped("api")
+        let errorHandler = api.grouped(errorMiddleware)
+        let v1 = errorHandler.grouped("v1")
+        let secured = v1.grouped(tokenMiddleware)
+
+        // Public resources
         v1.post("register", handler: userController.register)
         v1.post("login", handler: userController.login)
         v1.post("logout", handler: userController.logout)
-
+        v1.resource(Community.uniqueSlug, communityController)
 
         //NOTE: TokenAuthenticationMiddleware should be used only to fluent token auth, not JWT
         //let secured = v1.grouped(TokenAuthenticationMiddleware(User.self))
-        let tokenMiddleware = PayloadAuthenticationMiddleware(try self.droplet.assertSigner(),[], User.self)
-        let errorMiddleware = try ErrorMiddleware(config: droplet.config)
-        let secured = v1.grouped([tokenMiddleware, errorMiddleware])
-        secured.resource(Community.uniqueSlug, communityController)
 
-        let users = secured.grouped(User.uniqueSlug)
+        // Private resources
+        secured.post(Community.uniqueSlug, handler: communityController.store)
         secured.resource(User.uniqueSlug, userController)
+        let users = secured.grouped(User.uniqueSlug)
         users.get("me", handler: userController.me)
     }
 }
