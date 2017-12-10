@@ -28,6 +28,11 @@ public final class User {
     var username: String
 
     /**
+     Email (String).
+     */
+    var email: String?
+
+    /**
      Password (String?).
      */
     var password: String?
@@ -38,8 +43,9 @@ public final class User {
      - parameter username: The username (String).
      - parameter password: The password (String?).
      */
-    public init(username: String, password: String? = nil) {
+    public init(username: String, email: String? = nil, password: String? = nil) {
         self.username = username
+        self.email = email
         self.password = password
     }
 
@@ -71,7 +77,7 @@ public final class User {
             guard let userDocument = try UsersServices.read(
                 by: "username",
                 value: self.username,
-                projection: ["_id": .excluded, "password": .excluded]
+                projection: ["_id": .excluded, "password": .excluded, "subscriptions": .excluded]
             ) else {
                 throw Abort(.notFound, reason: "\(self.username) not found.")
             }
@@ -86,14 +92,35 @@ public final class User {
     /**
      Get community subscriptions.
      */
-    public func getCommunities() throws -> ResponseRepresentable {
+    public func getSubscriptions() throws -> ResponseRepresentable {
         do {
-            let commmunitiesCollection = try CommunityServices.getCommnunitiesBy(subscriber: self.username)
+            guard let commmunitiesCollection = try UsersServices.getSubscriptions(from: self.username) else {
+                throw Abort(.notFound, reason: "\(self.username) not found.")
+            }
+
             return commmunitiesCollection.makeExtendedJSONString()
         } catch ServicesErrors.getCommunities {
-            let reason = "A problem is occured we try to get \(self.username) communities)"
+            let reason = "A problem is occured we try to get \(self.username) communities"
             throw Abort(.internalServerError, reason: reason)
         }
+    }
+
+    /**
+     TODO: TEST.
+     Subscribe a user to a community.
+
+     - returns: A JSON String response.
+     */
+    public func subscribe(to community: Community) throws -> ResponseRepresentable {
+        do {
+            try UsersServices.subscribe(username: self.username, to: community.name)
+        } catch ServicesErrors.subscribe {
+            let reason = "A problem is occured when we try to susbscribe \(self.username) to \(community.name)"
+            throw Abort(.internalServerError, reason: reason)
+        }
+
+        return try self.get()
+//        return Response(status: .ok)
     }
 }
 

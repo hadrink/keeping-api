@@ -78,23 +78,6 @@ public final class Community {
         CommunityServices.create(document: communityDocument)
         return try self.get()
     }
-
-    /**
-     TODO: TEST.
-     Subscribe a user to a community.
-
-     - returns: A JSON String response.
-     */
-    public func subscribe(user: User) throws -> ResponseRepresentable {
-        do {
-            try CommunityServices.subscribe(username: user.username, to: self.name)
-        } catch ServicesErrors.subscribe {
-            let reason = "A problem is occured when we try to susbscribe \(user.username) to \(self.name)"
-            throw Abort(.internalServerError, reason: reason)
-        }
-
-        return Response(status: .ok)
-    }
 }
 
 /// Commnunity extension type of Parameterizable.

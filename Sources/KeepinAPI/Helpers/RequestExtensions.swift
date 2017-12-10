@@ -21,6 +21,10 @@ extension Request {
             throw Abort(.badRequest, reason: "Missing username.")
         }
 
+        guard let email = json["email"]?.string else {
+            throw Abort(.badRequest, reason: "Missing email.")
+        }
+
         guard let password = json["password"]?.string else {
             throw Abort(.badRequest, reason: "Missing password.")
         }

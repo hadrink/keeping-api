@@ -18,7 +18,7 @@ struct SubscriptionController {
      */
     func index(_ req: Request) throws -> ResponseRepresentable {
         let user = try req.user()
-        return try user.getCommunities()
+        return try user.getSubscriptions()
     }
 
     /**
@@ -32,8 +32,7 @@ struct SubscriptionController {
             throw Abort(.badRequest, reason: "Missing name")
         }
 
-        let user = try req.user()
-        return try Community(name: name).subscribe(user: user)
+        return try req.user().subscribe(to: Community(name: name))
     }
 }
 
