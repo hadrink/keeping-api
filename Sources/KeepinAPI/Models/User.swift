@@ -12,6 +12,8 @@ import BCrypt
 import AuthProvider
 import JWTProvider
 import JWT
+import Validation
+
 
 /// User error
 public enum UserError: Error {
@@ -43,10 +45,16 @@ public final class User {
      - parameter username: The username (String).
      - parameter password: The password (String?).
      */
-    public init(username: String, email: String? = nil, password: String? = nil) {
+    public init(username: String, email: String? = nil, password: String? = nil) throws {
         self.username = username
         self.email = email
         self.password = password
+
+        guard let email = email else {
+            return
+        }
+
+        try EmailValidator().validate(email)
     }
 
     /**
@@ -132,7 +140,11 @@ extension User: Parameterizable {
     }
 
     public static func make(for parameter: String) throws -> User {
-        return User(username: parameter)
+        do {
+            return try User(username: parameter)
+        } catch let e {
+            throw Abort(.badRequest, reason: e.localizedDescription)
+        }
     }
 }
 
@@ -154,7 +166,11 @@ extension User: PasswordAuthenticatable {
             throw Abort(.notAcceptable, reason: "Wrong password")
         }
 
-        return User(username: creds.username)
+        do {
+            return try User(username: creds.username)
+        } catch ValidatorError.failure( _, let reason) {
+            throw Abort(.badRequest, reason: reason)
+        }
     }
 }
 
@@ -168,10 +184,15 @@ extension User: TokenAuthenticatable {
         try jwt.verifySignature(using: HS256(key: "SIGNING_KEY".makeBytes()))
         let time = ExpirationTimeClaim(date: Date())
         try jwt.verifyClaims([time])
-        guard let userId = jwt.payload.object?[SubjectClaim.name]?.string else { throw AuthenticationError.invalidCredentials
+        guard let userId = jwt.payload.object?[SubjectClaim.name]?.string else {
+            throw AuthenticationError.invalidCredentials
         }
 
-        return User(username: userId)
+        do {
+            return try User(username: userId)
+        } catch ValidatorError.failure( _, let reason) {
+            throw Abort(.badRequest, reason: reason)
+        }
     }
 }
 
@@ -187,6 +208,10 @@ extension User: PayloadAuthenticatable {
 
         let userId = payload.subjectClaimValue
 
-        return User(username: userId)
+        do {
+            return try User(username: userId)
+        } catch ValidatorError.failure( _, let reason) {
+            throw Abort(.badRequest, reason: reason)
+        }
     }
 }

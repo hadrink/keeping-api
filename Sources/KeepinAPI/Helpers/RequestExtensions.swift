@@ -6,6 +6,7 @@
 //
 
 import Vapor
+import Validation
 
 /// Request extension.
 extension Request {
@@ -29,7 +30,11 @@ extension Request {
             throw Abort(.badRequest, reason: "Missing password.")
         }
 
-        return User(username: username, password: password)
+        do {
+            return try User(username: username, email: email, password: password)
+        } catch ValidatorError.failure( _, let reason) {
+            throw Abort(.badRequest, reason: reason)
+        }
     }
 
     /**

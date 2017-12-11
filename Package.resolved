@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/vapor/console.git",
         "state": {
           "branch": null,
-          "revision": "11c0694857d1be6c7b8b30d8db8b1162b73f2a2b",
-          "version": "2.2.0"
+          "revision": "df9eb9a6afd03851abcb3d8204d04c368729776e",
+          "version": "2.3.0"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/vapor/core.git",
         "state": {
           "branch": null,
-          "revision": "b8330808f4f6b69941961afe8ad6b015562f7b7c",
-          "version": "2.1.2"
+          "revision": "f9f3a585ab0ea5764b46d7a36d9c0d9d508b9c63",
+          "version": "2.2.0"
         }
       },
       {
@@ -123,8 +123,8 @@
         "repositoryURL": "https://github.com/vapor/fluent.git",
         "state": {
           "branch": null,
-          "revision": "9f94af35b177b5a5fdc40a81703e68c072c5013d",
-          "version": "2.4.1"
+          "revision": "2c66e5c6c99dac19554e1cb8957e6de256009efc",
+          "version": "2.4.2"
         }
       },
       {
@@ -159,8 +159,8 @@
         "repositoryURL": "https://github.com/OpenKitten/MongoKitten.git",
         "state": {
           "branch": null,
-          "revision": "56a1f14606e9630ba1c6cc0f8905e4a00e07e791",
-          "version": "4.1.1"
+          "revision": "099b684b76402cf048ebf12bd5a11afe2979c7a3",
+          "version": "4.1.2"
         }
       },
       {
@@ -236,12 +236,21 @@
         }
       },
       {
-        "package": "Vapor",
-        "repositoryURL": "https://github.com/qutheory/vapor.git",
+        "package": "Validation",
+        "repositoryURL": "https://github.com/vapor/validation.git",
         "state": {
           "branch": null,
-          "revision": "0747ab4819f90c9be451847f80a153184526ad79",
-          "version": "2.3.0"
+          "revision": "e5a7e54ef7a611b168806191df5d6b6782fd43ed",
+          "version": "1.1.1"
+        }
+      },
+      {
+        "package": "Vapor",
+        "repositoryURL": "https://github.com/vapor/vapor.git",
+        "state": {
+          "branch": null,
+          "revision": "63768e7f56e58dbfa4288e16ad2e4003bfd8dcde",
+          "version": "2.4.0"
         }
       }
     ]
