@@ -41,13 +41,21 @@ public struct UsersServices: Services {
      */
     public static func getSubscriptions(from username: String) throws -> Document? {
         do {
-            let projection: Projection = [
-                "_id": .excluded,
-                "password": .excluded,
-                "subscriptions._id": .excluded,
-            ]
+            var projection: Projection = ["subscriptions": .included]
+            projection.suppressIdentifier()
 
-            return try self.read(by: "username", value: username, projection: projection)
+            let document = try self.read(by: "username", value: username, projection: projection)
+            let embeddedSubs = Document(document?["subscriptions"])
+            let embeddedSubsWithoutId = embeddedSubs.map({(document: Document) -> [Document?] in
+                return document.map({(value: Document.Element) -> Document? in
+                    var d = Document(value.value)
+                    d?.removeValue(forKey: "_id")
+                    return d
+                }
+            )}).flatMap{ $0 }
+
+            let subsDocument: Document = ["subscriptions": embeddedSubsWithoutId]
+            return subsDocument
         } catch let e {
             print("Get communities error \(e)")
             throw ServicesErrors.getCommunities
