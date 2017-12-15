@@ -85,4 +85,17 @@ extension Services {
             throw ServicesErrors.read
         }
     }
+
+    public static func read(by key: String, value: String, projection: Projection? = ["_id": .excluded]) throws -> CollectionSlice<Document>? {
+        do {
+            guard let projecting = projection else {
+                return try collection.find(key == value)
+            }
+
+            return try collection.find(key == value, projecting: projecting)
+        } catch let e {
+            print("Get \(key) by \(value) error: \(e)")
+            throw ServicesErrors.read
+        }
+    }
 }

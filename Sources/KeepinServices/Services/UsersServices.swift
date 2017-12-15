@@ -20,7 +20,7 @@ public struct UsersServices: Services {
      */
     public static func subscribe(username: String, to communityName: String) throws {
         do {
-            let c = try CommunityServices.read(by: "name", value: communityName, projection: nil)
+            let c: Document? = try CommunityServices.read(by: "name", value: communityName, projection: nil)
             try collection.update("username" == username, to: [
                 "$addToSet": [
                     "subscriptions": c
@@ -44,7 +44,7 @@ public struct UsersServices: Services {
             var projection: Projection = ["subscriptions": .included]
             projection.suppressIdentifier()
 
-            let document = try self.read(by: "username", value: username, projection: projection)
+            let document: Document? = try self.read(by: "username", value: username, projection: projection)
             let embeddedSubs = Document(document?["subscriptions"])
             let embeddedSubsWithoutId = embeddedSubs.map({(document: Document) -> [Document?] in
                 return document.map({(value: Document.Element) -> Document? in

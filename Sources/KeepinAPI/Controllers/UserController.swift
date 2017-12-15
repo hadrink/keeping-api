@@ -77,6 +77,15 @@ struct UserController {
     }
 
     /**
+     Communities.
+     - parameter request: The HTTP request.
+     - returns: A JSON List of community.
+     */
+    func communities(req: Request) throws -> ResponseRepresentable {
+        return try req.user().getMyCommunities()
+    }
+
+    /**
      TODO: TEST.
      Get JSON response.
      - parameter req: The HTTP request (Request).
