@@ -48,6 +48,6 @@ final class MainRoutes: RouteCollection {
         users.get("me", handler: userController.me)
         users.get("communities", handler: userController.communities)
 
-        secured.socket("chat", handler: ChatController().handler)
+        v1.socket("chat", handler: ChatController().handler)
     }
 }

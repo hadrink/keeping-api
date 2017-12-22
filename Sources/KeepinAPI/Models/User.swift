@@ -197,7 +197,13 @@ extension User: TokenAuthenticatable {
 
     public static func authenticate(_ token: Token) throws -> User {
         let jwt = try JWT(token: token.string)
-        try jwt.verifySignature(using: HS256(key: "SIGNING_KEY".makeBytes()))
+
+        guard let keyString = drop.config["jwt", "signer", "key"]?.string else {
+            PrintLogger().fatal("Jwt key is missing")
+            throw Abort(.internalServerError)
+        }
+
+        try jwt.verifySignature(using: RS256(key: keyString.bytes.base64Decoded))
         let time = ExpirationTimeClaim(date: Date())
         try jwt.verifyClaims([time])
         guard let userId = jwt.payload.object?[SubjectClaim.name]?.string else {

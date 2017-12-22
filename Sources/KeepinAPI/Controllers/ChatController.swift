@@ -7,6 +7,7 @@
 
 import Vapor
 import Foundation
+import AuthProvider
 
 /// Chat controller
 class ChatController {
@@ -39,13 +40,17 @@ class ChatController {
             }
 
             let roomsFound = self.rooms.filter{$0.roomName == roomName}
-            room = roomsFound.count > 0 ? roomsFound[0] : Room(roomName: roomName)
+            room = roomsFound.count > 0 ? roomsFound.first : Room(roomName: roomName)
             self.rooms.append(room!)
 
-            if let u = json.object?["username"]?.string {
-                username = u
-                room?.connections[u] = ws
-                room?.bot("\(u) has joined. 👋")
+            if username == nil, let token = json.object?["token"]?.string {
+                let user = try User.authenticate(Token(string: token))
+                username = user.username
+                room?.connections[user.username] = ws
+            }
+
+            if let randomUser = json.object?["random_user"]?.string {
+                room?.connections[randomUser] = ws
             }
 
             if let u = username, let m = json.object?["message"]?.string {
