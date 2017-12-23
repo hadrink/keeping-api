@@ -23,12 +23,13 @@ class ChatController {
      - parameter ws: The user websocket.
      */
     func handler(req: Request, ws: WebSocket) {
-        var pingTimer: DispatchSourceTimer? = nil
-        var username: String? = nil
+        var pingTimer: DispatchSourceTimer?
+        var validUsername: String?
+        var randomUsername: String?
         var room: Room?
 
         pingTimer = DispatchSource.makeTimerSource()
-        pingTimer?.scheduleRepeating(deadline: .now(), interval: .seconds(25))
+        pingTimer?.schedule(deadline: .now(), repeating: .seconds(25))
         pingTimer?.setEventHandler { try? ws.ping() }
         pingTimer?.resume()
 
@@ -43,17 +44,18 @@ class ChatController {
             room = roomsFound.count > 0 ? roomsFound.first : Room(roomName: roomName)
             self.rooms.append(room!)
 
-            if username == nil, let token = json.object?["token"]?.string {
+            if validUsername == nil, let token = json.object?["token"]?.string {
                 let user = try User.authenticate(Token(string: token))
-                username = user.username
+                validUsername = user.username
                 room?.connections[user.username] = ws
             }
 
-            if let randomUser = json.object?["random_user"]?.string {
-                room?.connections[randomUser] = ws
+            if randomUsername == nil, json.object?["token"] == nil {
+                randomUsername = UUID().uuidString
+                room?.connections[randomUsername!] = ws
             }
 
-            if let u = username, let m = json.object?["message"]?.string {
+            if let u = validUsername, let m = json.object?["message"]?.string {
                 room?.sendBy(name: u, message: m)
             }
         }
@@ -62,7 +64,7 @@ class ChatController {
             pingTimer?.cancel()
             pingTimer = nil
 
-            guard let u = username else {
+            guard let u = validUsername ?? randomUsername else {
                 return
             }
 
