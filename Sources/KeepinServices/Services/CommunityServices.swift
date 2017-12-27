@@ -28,4 +28,20 @@ public struct CommunityServices: Services {
             throw ServicesErrors.getCommunities
         }
     }
+
+    /**
+     TODO: TEST.
+     Get a community document.
+     - parameter name: Community name.
+     - returns: A community document.
+     */
+    public static func get(by name: String) throws -> Document? {
+        do {
+            let community: Document? = try self.read(by: "name", value: name)
+            return community
+        } catch let e {
+            print("Get community error \(e)")
+            throw ServicesErrors.getCommunity
+        }
+    }
 }

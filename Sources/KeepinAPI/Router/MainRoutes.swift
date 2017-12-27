@@ -24,6 +24,7 @@ final class MainRoutes: RouteCollection {
         let userController = UserController(droplet: self.droplet)
         let communityController = CommunityController()
         let subscriptionController = SubscriptionController()
+        let spaceController = SpaceController()
 
         // Builders
         let api = builder.grouped("api")
@@ -44,6 +45,7 @@ final class MainRoutes: RouteCollection {
         secured.post(Community.uniqueSlug, handler: communityController.store)
         secured.resource(User.uniqueSlug, userController)
         secured.resource("subscriptions", subscriptionController)
+        secured.resource(Space.uniqueSlug, spaceController)
         let users = secured.grouped(User.uniqueSlug)
         users.get("me", handler: userController.me)
         users.get("communities", handler: userController.communities)

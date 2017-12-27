@@ -75,11 +75,9 @@ public final class Community {
             "admin": admin.username
         ]
 
-        CommunityServices.create(document: communityDocument)
+        try CommunityServices.create(document: communityDocument)
         return try self.get()
     }
-
-    
 }
 
 /// Commnunity extension type of Parameterizable.

@@ -73,7 +73,7 @@ public final class User {
             "password": passwordHash.makeString()
         ]
 
-        UsersServices.create(document: userDocument)
+        try UsersServices.create(document: userDocument)
         return try self.get()
     }
 

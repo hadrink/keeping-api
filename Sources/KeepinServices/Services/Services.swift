@@ -12,6 +12,10 @@ public enum ServicesErrors: Error {
     case read
     case subscribe
     case getCommunities
+    case getCommunity
+    case getSpace
+    case create
+    case update
 }
 
 /// Services protocol.
@@ -25,7 +29,7 @@ protocol Services {
      Insert a document
      - parameter document: The document you want to insert.
      */
-    static func create(document: Document)
+    static func create(document: Document) throws
 
     /**
      Remove a document from the document object id.
@@ -49,11 +53,12 @@ protocol Services {
 
 /// Services protocol extension (default value).
 extension Services {
-    public static func create(document: Document) {
+    public static func create(document: Document) throws {
         do {
             try collection.insert(document)
         } catch let e {
             print("Failed to insert document: \(e)")
+            throw ServicesErrors.create
         }
     }
 

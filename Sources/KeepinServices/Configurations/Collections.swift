@@ -11,5 +11,6 @@ enum KICollections: String {
     case users
     case videos
     case communities
+    case spaces
 }
 
