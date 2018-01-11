@@ -76,6 +76,7 @@ public final class Community {
         ]
 
         try CommunityServices.create(document: communityDocument)
+        try SpaceServices.create(with: communityDocument)
         return try self.get()
     }
 }

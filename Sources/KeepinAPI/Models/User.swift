@@ -146,6 +146,23 @@ public final class User {
             throw Abort(.internalServerError, reason: reason)
         }
     }
+
+    /**
+     TODO: TEST.
+     Check is this user is admin of the community given.
+     - parameter community: The community given (Community)
+
+     - returns: Is admin or not.
+     */
+    public func isAdmin(community: Community) throws -> Bool {
+        do {
+            let c = try CommunityServices.get(by: community.name)
+            return String(c?["admin"]) == self.username
+        } catch ServicesErrors.getCommunity {
+            let reason = "A problem is occured we try to get \(self.username) communities"
+            throw Abort(.internalServerError, reason: reason)
+        }
+    }
 }
 
 /// User extension type of Parameterizable.

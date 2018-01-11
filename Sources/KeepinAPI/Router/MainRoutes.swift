@@ -25,6 +25,7 @@ final class MainRoutes: RouteCollection {
         let communityController = CommunityController()
         let subscriptionController = SubscriptionController()
         let spaceController = SpaceController()
+        let chatController = ChatController()
 
         // Builders
         let api = builder.grouped("api")
@@ -37,6 +38,7 @@ final class MainRoutes: RouteCollection {
         v1.post("login", handler: userController.login)
         v1.post("logout", handler: userController.logout)
         v1.resource(Community.uniqueSlug, communityController)
+        v1.resource(Space.uniqueSlug, spaceController)
 
         //NOTE: TokenAuthenticationMiddleware should be used only to fluent token auth, not JWT
         //let secured = v1.grouped(TokenAuthenticationMiddleware(User.self))
@@ -45,11 +47,16 @@ final class MainRoutes: RouteCollection {
         secured.post(Community.uniqueSlug, handler: communityController.store)
         secured.resource(User.uniqueSlug, userController)
         secured.resource("subscriptions", subscriptionController)
-        secured.resource(Space.uniqueSlug, spaceController)
+
+        secured.patch(Space.uniqueSlug, ":spaces") { req in
+            let space = try req.parameters.next(Space.self)
+            return try spaceController.update(req, space: space)
+        }
+        
         let users = secured.grouped(User.uniqueSlug)
         users.get("me", handler: userController.me)
         users.get("communities", handler: userController.communities)
 
-        v1.socket("chat", handler: ChatController().handler)
+        v1.socket("chat", handler: chatController.handler)
     }
 }

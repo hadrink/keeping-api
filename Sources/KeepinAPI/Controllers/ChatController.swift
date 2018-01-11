@@ -10,7 +10,7 @@ import Foundation
 import AuthProvider
 
 /// Chat controller
-class ChatController {
+final class ChatController {
 
     /*
      All rooms.
@@ -58,6 +58,17 @@ class ChatController {
             if let u = validUsername, let m = json.object?["message"]?.string {
                 room?.sendBy(name: u, message: m)
             }
+
+            if let u = validUsername, let n = json.object?["notification"]?.string, let r = room {
+                let user = try User(username: u)
+                let community = Community(name: r.roomName)
+
+                guard try user.isAdmin(community: community) else {
+                    return
+                }
+
+                r.sendServerNotification(n)
+            }
         }
 
         ws.onClose = { ws, _, _, _ in
@@ -85,5 +96,20 @@ class ChatController {
 
             self.rooms.remove(at: i)
         }
+    }
+
+    /**
+     Send a server notification to a room.
+     - parameter notification: Message to send (String).
+     - parameter roomName: Room (String).
+     */
+    func sendNotification(_ notification: String, to roomName: String) {
+        let roomsFound = self.rooms.filter{$0.roomName == roomName}
+
+        guard roomsFound.count > 0 else {
+            return
+        }
+
+        roomsFound.first?.sendServerNotification(notification)
     }
 }

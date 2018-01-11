@@ -27,7 +27,6 @@ public final class Space {
         self.community = community
     }
 
-
     /**
      TODO: TEST.
      Get community space.

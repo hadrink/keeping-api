@@ -8,7 +8,7 @@
 import Vapor
 
 /// Space Controller
-struct SpaceController {
+final class SpaceController {
 
     /**
      TODO: TEST.
@@ -17,7 +17,7 @@ struct SpaceController {
      - parameter space: The community space (Space).
      - returns: A ResponseReprentable object.
      */
-    func show(_ req: Request, space: Space) throws -> ResponseRepresentable {
+    func show(request: Request, space: Space) throws -> ResponseRepresentable {
         return try space.get()
     }
 
@@ -43,6 +43,12 @@ struct SpaceController {
      - returns: A ResponseReprentable object.
      */
     func update(_ req: Request, space: Space) throws -> ResponseRepresentable {
+        let user = try req.user()
+
+        guard try user.isAdmin(community: space.community) else {
+            throw Abort(.unauthorized, reason: "You are not authorized to update this space")
+        }
+
         guard let m = req.data["message"]?.string else {
             throw Abort(.badRequest, reason: "Message is missing")
         }
@@ -60,8 +66,7 @@ extension SpaceController: ResourceRepresentable {
     func makeResource() -> Resource<Space> {
         return Resource(
             store: store,
-            show: show,
-            update: update
+            show: show
         )
     }
 }

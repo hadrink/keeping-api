@@ -48,6 +48,24 @@ final class Room {
         }
     }
 
+    /**
+     Send a server notiication to a specific room name.
+     - parameter notification: Server notification (String).
+     */
+    func sendServerNotification(_ notification: String) {
+        let notificationNode: [String: NodeRepresentable] = [
+            "server_notification": notification
+        ]
+
+        guard let json = try? JSON(node: notificationNode) else {
+            return
+        }
+
+        for (username, socket) in connections {
+            try? socket.send(json)
+        }
+    }
+
     init(roomName: String) {
         self.roomName = roomName
     }
