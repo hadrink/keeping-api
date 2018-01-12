@@ -53,7 +53,7 @@ final class SpaceController {
             throw Abort(.badRequest, reason: "Message is missing")
         }
 
-        return try space.insert(message: m)
+        return try space.insert(message: m, by: user)
     }
 }
 

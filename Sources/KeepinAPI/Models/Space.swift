@@ -64,12 +64,14 @@ public final class Space {
     /**
      TODO: TEST.
      Insert a message in the community space.
+     - parameter message: Message to insert (String).
+     - parameter user: The emetter (User).
 
      - returns: A JSON String response.
      */
-    public func insert(message: String) throws -> ResponseRepresentable {
+    public func insert(message: String, by user: User) throws -> ResponseRepresentable {
         do {
-            try SpaceServices.insert(message: message, in: community.name)
+            try SpaceServices.insert(message: message, in: community.name, by: user.username)
         } catch ServicesErrors.update {
             let r = "A problem is occured when we try to insert '\(message)'in \(community.name) space"
             throw Abort(.internalServerError, reason: r)

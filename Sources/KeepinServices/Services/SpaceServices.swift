@@ -49,12 +49,14 @@ public struct SpaceServices: Services {
      Insert a message in the community space.
      - parameter message: The message content (String).
      - parameter communityName: The associate community name (String).
+     - parameter username: The emetter (String).
      */
-    public static func insert(message: String, in communityName: String) throws {
+    public static func insert(message: String, in communityName: String, by username: String) throws {
         do {
             let messageDocument: Document = [
                 "id": ObjectId(),
                 "date": Date(),
+                "username": username,
                 "content": message
             ]
             try collection.update("community.name" == communityName, to: [
