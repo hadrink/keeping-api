@@ -44,4 +44,20 @@ public struct CommunityServices: Services {
             throw ServicesErrors.getCommunity
         }
     }
+
+    /**
+     TODO: TEST.
+     Get communities asked.
+     - parameter names: Communities name.
+     - returns: A document with communities asked.
+     */
+    public static func getCommunities(by names: Array<String>) throws -> CollectionSlice<Document>? {
+        do {
+            return try self.collection.find("name".in(names), projecting: ["_id": .excluded])
+        } catch let e {
+            print("Get communities error \(e)")
+            throw ServicesErrors.getCommunities
+        }
+    }
+
 }

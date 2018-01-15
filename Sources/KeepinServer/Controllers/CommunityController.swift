@@ -1,14 +1,40 @@
 //
 //  CommunityController.swift
-//  KeepinAPI
+//  KeepinServer
 //
 //  Created by Rplay on 20/11/2017.
 //
 
 import Vapor
 
+protocol CommunityControllerDelegate {
+    /**
+     Return communities sorted by activity.
+     - parameter limit: Number of results.
+     - returns: A responsable object.
+     */
+    func requestSortedCommunitiesByActivity(limit: Int) throws -> ResponseRepresentable
+}
+
 /// Community Controller
-struct CommunityController {
+final class CommunityController {
+
+    var delegate: CommunityControllerDelegate?
+
+    /**
+     TODO: TEST.
+     Get JSON response.
+     - parameter req: The HTTP request (Request).
+     - returns: A ResponseReprentable object.
+     */
+    func index(_ req: Request) throws -> ResponseRepresentable {
+        guard let delegate = self.delegate else {
+            throw Abort(.internalServerError, reason: "Cannot get communities by activity")
+        }
+
+        let limit = req.data["limit"]?.int
+        return try delegate.requestSortedCommunitiesByActivity(limit: limit ?? 10)
+    }
 
     /**
      TODO: TEST.
@@ -45,6 +71,7 @@ extension CommunityController: ResourceRepresentable {
      */
     func makeResource() -> Resource<Community> {
         return Resource(
+            index: index,
             store: store,
             show: show
         )

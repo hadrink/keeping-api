@@ -1,6 +1,6 @@
 //
 //  SubscriptionController.swift
-//  KeepinAPI
+//  KeepinServer
 //
 //  Created by Rplay on 07/12/2017.
 //
@@ -28,8 +28,8 @@ struct SubscriptionController {
      - returns: A ResponseReprentable object.
      */
     func store(_ req: Request) throws -> ResponseRepresentable {
-        guard let name = req.data["name"]?.string else {
-            throw Abort(.badRequest, reason: "Missing name")
+        guard let name = req.data["communityName"]?.string else {
+            throw Abort(.badRequest, reason: "Missing community name")
         }
 
         return try req.user().subscribe(to: Community(name: name))

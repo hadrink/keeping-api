@@ -19,12 +19,18 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "KeepinAPI",
-            dependencies: ["KeepinServices", "AuthProvider", "JWTProvider", "Validation"]),
+            dependencies: ["KeepinServer"]),
         .target(
             name: "KeepinServices",
             dependencies: ["MongoKitten"]),
+        .target(
+            name: "KeepinServer",
+            dependencies: ["KeepinServices", "AuthProvider", "JWTProvider", "Validation"]),
         .testTarget(
             name: "KeepinServicesTests",
             dependencies: ["KeepinServices"]),
+        .testTarget(
+            name: "KeepinServerTests",
+            dependencies: ["KeepinServer"]),
     ]
 )

@@ -1,6 +1,6 @@
 //
 //  DropletExtensions.swift
-//  KeepinAPI
+//  KeepinServer
 //
 //  Created by Rplay on 31/10/2017.
 //
@@ -16,7 +16,7 @@ extension Droplet {
      */
     public func setup() throws {
         try collection(MainRoutes(self))
-        let userController = UserController(droplet: drop)
+        let userController = UserController(droplet: self)
         let communityController = CommunityController()
 
         self.resource(User.uniqueSlug, userController)

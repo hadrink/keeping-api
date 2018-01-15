@@ -127,7 +127,7 @@ public final class User {
             throw Abort(.internalServerError, reason: reason)
         }
 
-        return try self.get()
+        return try self.getSubscriptions()
     }
 
     /**
@@ -215,7 +215,7 @@ extension User: TokenAuthenticatable {
     public static func authenticate(_ token: Token) throws -> User {
         let jwt = try JWT(token: token.string)
 
-        guard let keyString = drop.config["jwt", "signer", "key"]?.string else {
+        guard let keyString = drop?.config["jwt", "signer", "key"]?.string else {
             PrintLogger().fatal("Jwt key is missing")
             throw Abort(.internalServerError)
         }

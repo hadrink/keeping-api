@@ -1,6 +1,6 @@
 //
 //  RoomController.swift
-//  KeepinAPI
+//  KeepinServer
 //
 //  Created by Rplay on 20/12/2017.
 //
@@ -12,10 +12,18 @@ import AuthProvider
 /// Chat controller
 final class ChatController {
 
+    init(communityController: CommunityController) {
+        communityController.delegate = self
+    }
+
     /*
      All rooms.
      */
     var rooms: Array<Room> = []
+
+    var roomsSortedByActivity: Array<Room> {
+        return self.rooms.sorted(by: { $0.connections.count > $1.connections.count })
+    }
 
     /**
      Handle sockets.
@@ -111,5 +119,18 @@ final class ChatController {
         }
 
         roomsFound.first?.sendServerNotification(notification)
+    }
+}
+
+extension ChatController: CommunityControllerDelegate {
+
+    func requestSortedCommunitiesByActivity(limit: Int) throws -> ResponseRepresentable {
+        let count = self.roomsSortedByActivity.count
+        let limit = count < limit ? count : limit
+        let communities = self.roomsSortedByActivity[0..<limit].map({(room: Room) -> Community in
+            return Community(name: room.roomName)
+        })
+
+        return try Community.get(communities: communities)
     }
 }

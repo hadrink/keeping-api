@@ -1,6 +1,6 @@
 //
 //  ServicesTests.swift
-//  KeepinAPIServicesTests
+//  KeepinServicesTests
 //
 //  Created by Rplay on 01/10/2017.
 //
@@ -24,24 +24,24 @@ class ServicesTests: XCTestCase {
     /**
      Test create.
      */
-    func testCreate() {
-        let userDocument: Document = ["username":  "jean"]
-        UsersServices.create(document: userDocument)
-
-        do {
-            guard let documents = try collection?.find("username" == "jean") else {
-                XCTFail()
-                return
-            }
-
-            for document in documents {
-                XCTAssertNotNil(document)
-            }
-        } catch let e {
-            print(e)
-            XCTFail()
-        }
-    }
+//    func testCreate() {
+//        let userDocument: Document = ["username":  "jean"]
+//        UsersServices.create(document: userDocument)
+//
+//        do {
+//            guard let documents = try collection?.find("username" == "jean") else {
+//                XCTFail()
+//                return
+//            }
+//
+//            for document in documents {
+//                XCTAssertNotNil(document)
+//            }
+//        } catch let e {
+//            print(e)
+//            XCTFail()
+//        }
+//    }
 
     /**
      Test update.

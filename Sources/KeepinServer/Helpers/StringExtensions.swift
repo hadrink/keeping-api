@@ -1,6 +1,6 @@
 //
 //  StringExtensions.swift
-//  KeepinAPI
+//  KeepinServer
 //
 //  Created by Rplay on 20/12/2017.
 //

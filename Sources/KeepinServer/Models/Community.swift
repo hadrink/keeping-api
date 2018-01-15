@@ -1,6 +1,6 @@
 //
 //  Community.swift
-//  KeepinAPI
+//  KeepinServer
 //
 //  Created by Rplay on 20/11/2017.
 //
@@ -78,6 +78,29 @@ public final class Community {
         try CommunityServices.create(document: communityDocument)
         try SpaceServices.create(with: communityDocument)
         return try self.get()
+    }
+
+    /**
+     Get communities
+     - parameter communities: Communities searched.
+
+     - returns: A JSON String response.
+     */
+    static func get(communities: Array<Community>) throws -> ResponseRepresentable {
+        let names = communities.map({(community: Community) -> String in
+            return community.name
+        })
+
+        do {
+            guard let communities = try CommunityServices.getCommunities(by: names) else {
+                throw Abort(.notFound, reason: "Communities not found.")
+            }
+
+            return communities.makeDocument().makeExtendedJSONString()
+        } catch ServicesErrors.getCommunities {
+            let reason = "A problem is occured when we try to get communities."
+            throw Abort(.internalServerError, reason: reason)
+        }
     }
 }
 

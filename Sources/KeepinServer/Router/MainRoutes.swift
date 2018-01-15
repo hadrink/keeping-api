@@ -1,6 +1,6 @@
 //
 //  MainRoutes.swift
-//  KeepinAPI
+//  KeepinServer
 //
 //  Created by Rplay on 30/10/2017.
 //
@@ -25,7 +25,7 @@ final class MainRoutes: RouteCollection {
         let communityController = CommunityController()
         let subscriptionController = SubscriptionController()
         let spaceController = SpaceController()
-        let chatController = ChatController()
+        let chatController = ChatController(communityController: communityController)
 
         // Builders
         let api = builder.grouped("api")
