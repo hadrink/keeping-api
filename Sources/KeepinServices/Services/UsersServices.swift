@@ -32,6 +32,26 @@ public struct UsersServices: Services {
         }
     }
 
+    /**
+     TODO: TEST.
+     Service for unsubscribe a user to a community.
+     - parameter username: Unique username.
+     - parameter communityName: Unique communityName
+     */
+    public static func unsubscribe(username: String, from communityName: String) throws {
+        do {
+            let c: Document? = try CommunityServices.read(by: "name", value: communityName, projection: nil)
+            try collection.update("username" == username, to: [
+                "$pull": [
+                    "subscriptions": c
+                ]
+            ])
+        } catch let e {
+            print("Subscription error: \(e)")
+            throw ServicesErrors.unsubscribe
+        }
+    }
+
 
     /**
      TODO: TEST.

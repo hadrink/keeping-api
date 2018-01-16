@@ -34,6 +34,16 @@ struct SubscriptionController {
 
         return try req.user().subscribe(to: Community(name: name))
     }
+
+    /**
+     TODO: TEST.
+     Unsubscribe a user from a community.
+     - parameter req: The HTTP request (Request).
+     - returns: A ResponseReprentable object.
+     */
+    func destroy(_ req: Request, community: Community) throws -> ResponseRepresentable {
+        return try req.user().unsubscribe(from: community)
+    }
 }
 
 /// Resource Representable extension for Subscription Controller.
@@ -45,7 +55,8 @@ extension SubscriptionController: ResourceRepresentable {
     func makeResource() -> Resource<Community> {
         return Resource(
             index: index,
-            store: store
+            store: store,
+            destroy: destroy
         )
     }
 }

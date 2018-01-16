@@ -115,6 +115,24 @@ public final class User {
 
     /**
      TODO: TEST.
+     Unsubscribe a user to a community.
+     - parameter community: Community you want unsub.
+
+     - returns: A JSON String response.
+     */
+    public func unsubscribe(from community: Community) throws -> ResponseRepresentable {
+        do {
+            try UsersServices.unsubscribe(username: self.username, from: community.name)
+        } catch ServicesErrors.unsubscribe {
+            let reason = "A problem is occured when we try to unsusbscribe \(self.username) to \(community.name)"
+            throw Abort(.internalServerError, reason: reason)
+        }
+
+        return try self.getSubscriptions()
+    }
+
+    /**
+     TODO: TEST.
      Subscribe a user to a community.
 
      - returns: A JSON String response.
