@@ -19,6 +19,34 @@ final class Room {
     var connections: [String: WebSocket] = [:]
 
     /**
+     Some messages in cache.
+     */
+    var cache: [JSON] = []
+
+    /**
+     Last message received.
+     */
+    var lastMessageReceived: JSON? {
+        get {
+            return self.cache.last
+        }
+
+        set(newMessage) {
+            guard let message = newMessage else {
+                return
+            }
+
+            guard self.cache.count > 99 else {
+                self.cache.append(message)
+                return
+            }
+
+            self.cache.remove(at: 0)
+            self.cache.append(message)
+        }
+    }
+
+    /**
      Message return by a bot.
      - parameter message: The content.
      */
@@ -36,16 +64,30 @@ final class Room {
 
         let messageNode: [String: NodeRepresentable] = [
             "username": name,
-            "message": message
+            "message": message,
+            "date": Date()
         ]
 
         guard let json = try? JSON(node: messageNode) else {
             return
         }
 
+        self.lastMessageReceived = json
+
         for (username, socket) in connections {
             try? socket.send(json)
         }
+
+    }
+
+    /**
+     Send messages in cache to a websocket.
+     - parameter socket: Websocket.
+     */
+    func sendMessagesInCacheTo(socket: WebSocket) {
+        cache.forEach({ json in
+            try? socket.send(json)
+        })
     }
 
     /**

@@ -56,11 +56,13 @@ final class ChatController {
                 let user = try User.authenticate(Token(string: token))
                 validUsername = user.username
                 room?.connections[user.username] = ws
+                room?.sendMessagesInCacheTo(socket: ws)
             }
 
             if randomUsername == nil, json.object?["token"] == nil {
                 randomUsername = UUID().uuidString
                 room?.connections[randomUsername!] = ws
+                room?.sendMessagesInCacheTo(socket: ws)
             }
 
             if let u = validUsername, let m = json.object?["message"]?.string {
