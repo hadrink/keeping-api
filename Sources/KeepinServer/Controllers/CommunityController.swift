@@ -58,6 +58,12 @@ final class CommunityController {
             throw Abort(.badRequest, reason: "Missing name")
         }
 
+        do {
+            try NameValidator().validate(name)
+        } catch let e {
+            throw Abort(.badRequest, reason: e.localizedDescription)
+        }
+
         let user = try req.user()
         return try Community(name: name, admin: user).create()
     }

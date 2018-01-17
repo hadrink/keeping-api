@@ -10,7 +10,7 @@ import MongoKitten
 
 /// Space services.
 public struct SpaceServices: Services {
-    static let db = try! KIEnvironment.prod.database()
+    static let db = KIDatabase.connect
     static var collection = db[KICollections.spaces.rawValue]
 
     /**

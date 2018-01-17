@@ -22,7 +22,7 @@ let package = Package(
             dependencies: ["KeepinServer"]),
         .target(
             name: "KeepinServices",
-            dependencies: ["MongoKitten"]),
+            dependencies: ["MongoKitten", "Vapor"]),
         .target(
             name: "KeepinServer",
             dependencies: ["KeepinServices", "AuthProvider", "JWTProvider", "Validation"]),

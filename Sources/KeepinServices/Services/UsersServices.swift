@@ -9,7 +9,7 @@ import Foundation
 
 /// Users Services.
 public struct UsersServices: Services {
-    static let db = try! KIEnvironment.prod.database()
+    static let db = KIDatabase.connect
     static var collection = db[KICollections.users.rawValue]
 
     /**

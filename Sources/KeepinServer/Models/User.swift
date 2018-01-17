@@ -46,7 +46,7 @@ public final class User {
      - parameter password: The password (String?).
      */
     public init(username: String, email: String? = nil, password: String? = nil) throws {
-        self.username = username
+        self.username = username.lowercased()
         self.email = email
         self.password = password
 
@@ -54,6 +54,7 @@ public final class User {
             return
         }
 
+        try NameValidator().validate(username)
         try EmailValidator().validate(email)
     }
 

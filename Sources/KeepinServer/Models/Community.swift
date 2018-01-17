@@ -30,7 +30,7 @@ public final class Community {
      - parameter owner: The password (String?).
      */
     public init(name: String, admin: User? = nil) {
-        self.name = name
+        self.name = name.lowercased()
         self.admin = admin
     }
 
