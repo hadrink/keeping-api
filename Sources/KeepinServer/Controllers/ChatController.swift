@@ -8,6 +8,7 @@
 import Vapor
 import Foundation
 import AuthProvider
+import Dispatch
 
 /// Chat controller
 final class ChatController {
