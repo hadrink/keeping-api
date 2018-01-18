@@ -20,7 +20,7 @@ public enum ServicesErrors: Error {
 }
 
 /// Services protocol.
-protocol Services {
+public protocol Services {
     /**
      Return a collection.
      */
@@ -46,10 +46,19 @@ protocol Services {
 
     /**
      Read a document by key == value.
-     - parameter by: The document key you are looking for.
+     - parameter key: The document key you are looking for.
      - parameter value: The value you want to compare.
+     - parameter projection: Define keys you want return.
      */
-    static func read(by key: String, value: String, projection: Projection?) throws -> Document?
+    static func readOne(by key: String, value: String, projection: Projection?) throws -> Document?
+
+    /**
+     Read multiple documents by key == value.
+     - parameter key: The document key you are looking for.
+     - parameter value: The value you want to compare.
+     - parameter projection: Define keys you want return.
+     */
+    static func read(by key: String, value: String, projection: Projection?) throws -> CollectionSlice<Document>?
 }
 
 /// Services protocol extension (default value).
@@ -79,7 +88,7 @@ extension Services {
         }
     }
 
-    public static func read(by key: String, value: String, projection: Projection? = ["_id": .excluded]) throws -> Document? {
+    public static func readOne(by key: String, value: String, projection: Projection? = ["_id": .excluded]) throws -> Document? {
         do {
             guard let projecting = projection else {
                 return try collection.findOne(key == value)

@@ -11,7 +11,7 @@ import MongoKitten
 /// Space services.
 public struct SpaceServices: Services {
     static let db = KIDatabase.connect
-    static var collection = db[KICollections.spaces.rawValue]
+    public static var collection = db[KICollections.spaces.rawValue]
 
     /**
      TODO: TEST.
@@ -21,7 +21,7 @@ public struct SpaceServices: Services {
      */
     public static func getSpace(from communityName: String) throws -> Document? {
         do {
-            let space: Document? = try self.read(by: "community.name", value: communityName)
+            let space: Document? = try self.readOne(by: "community.name", value: communityName)
             return space
         } catch let e {
             print("Get space error \(e)")

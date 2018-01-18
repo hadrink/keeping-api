@@ -11,7 +11,7 @@ import MongoKitten
 /// Community services.
 public struct CommunityServices: Services {
     static let db = KIDatabase.connect
-    static var collection = db[KICollections.communities.rawValue]
+    public static var collection = db[KICollections.communities.rawValue]
 
     /**
      TODO: TEST.
@@ -37,7 +37,7 @@ public struct CommunityServices: Services {
      */
     public static func get(by name: String) throws -> Document? {
         do {
-            let community: Document? = try self.read(by: "name", value: name)
+            let community: Document? = try self.readOne(by: "name", value: name)
             return community
         } catch let e {
             print("Get community error \(e)")

@@ -10,7 +10,7 @@ import Foundation
 /// Users Services.
 public struct UsersServices: Services {
     static let db = KIDatabase.connect
-    static var collection = db[KICollections.users.rawValue]
+    public static var collection = db[KICollections.users.rawValue]
 
     /**
      TODO: TEST.
@@ -20,7 +20,7 @@ public struct UsersServices: Services {
      */
     public static func subscribe(username: String, to communityName: String) throws {
         do {
-            let c: Document? = try CommunityServices.read(by: "name", value: communityName, projection: nil)
+            let c: Document? = try CommunityServices.readOne(by: "name", value: communityName, projection: nil)
             try collection.update("username" == username, to: [
                 "$addToSet": [
                     "subscriptions": c
@@ -40,7 +40,7 @@ public struct UsersServices: Services {
      */
     public static func unsubscribe(username: String, from communityName: String) throws {
         do {
-            let c: Document? = try CommunityServices.read(by: "name", value: communityName, projection: nil)
+            let c: Document? = try CommunityServices.readOne(by: "name", value: communityName, projection: nil)
             try collection.update("username" == username, to: [
                 "$pull": [
                     "subscriptions": c
@@ -64,7 +64,7 @@ public struct UsersServices: Services {
             var projection: Projection = ["subscriptions": .included]
             projection.suppressIdentifier()
 
-            let document: Document? = try self.read(by: "username", value: username, projection: projection)
+            let document: Document? = try self.readOne(by: "username", value: username, projection: projection)
             let embeddedSubs = Document(document?["subscriptions"])
             let embeddedSubsWithoutId = embeddedSubs.map({(document: Document) -> [Document?] in
                 return document.map({(value: Document.Element) -> Document? in

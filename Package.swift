@@ -5,6 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "KeepinAPI",
+    products: [
+        // Products define the executables and libraries produced by a package, and make them visible to other packages.
+        .library(
+            name: "KeepinAPI",
+            targets: ["KeepinAPI"]),
+        ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
@@ -25,7 +31,7 @@ let package = Package(
             dependencies: ["MongoKitten", "Vapor"]),
         .target(
             name: "KeepinServer",
-            dependencies: ["KeepinServices", "AuthProvider", "JWTProvider", "Validation"]),
+            dependencies: ["KeepinServices", "AuthProvider", "JWTProvider", "Validation", "MongoKitten", "Vapor"]),
         .testTarget(
             name: "KeepinServicesTests",
             dependencies: ["KeepinServices"]),

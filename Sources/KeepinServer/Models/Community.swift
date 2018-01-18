@@ -42,7 +42,7 @@ public final class Community {
      */
     public func get() throws -> ResponseRepresentable {
         do {
-            guard let communityDocument: Document = try CommunityServices.read(by: "name", value: self.name) else {
+            guard let communityDocument = try CommunityServices.readOne(by: "name", value: self.name) else {
                 throw Abort(.notFound, reason: "\(self.name) not found.")
             }
 
@@ -64,7 +64,7 @@ public final class Community {
             throw Abort(.unauthorized, reason: "Missing admin user")
         }
 
-        let existingCommunity: Document? = try CommunityServices.read(by: "name", value: self.name)
+        let existingCommunity = try CommunityServices.readOne(by: "name", value: self.name)
         guard existingCommunity == nil else {
             let reason = "Community \(self.name) already exist"
             throw Abort(.unauthorized, reason: reason)

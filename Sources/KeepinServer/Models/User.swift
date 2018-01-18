@@ -4,7 +4,6 @@
 //
 //  Created by Rplay on 21/10/2017.
 //
-import Foundation
 import KeepinServices
 import Vapor
 import MongoKitten
@@ -13,7 +12,6 @@ import AuthProvider
 import JWTProvider
 import JWT
 import Validation
-
 
 /// User error
 public enum UserError: Error {
@@ -62,7 +60,7 @@ public final class User {
      Insert user in database.
      */
     public func create() throws -> ResponseRepresentable {
-        let existingUser: Document? = try UsersServices.read(by: "username", value: self.username)
+        let existingUser = try UsersServices.readOne(by: "username", value: self.username)
         guard existingUser == nil else {
             let reason = "Username \(self.username) already exist"
             throw Abort(.unauthorized, reason: reason)
@@ -83,7 +81,7 @@ public final class User {
      */
     public func get() throws -> ResponseRepresentable {
         do {
-            guard let userDocument: Document = try UsersServices.read(
+            guard let userDocument = try UsersServices.readOne(
                 by: "username",
                 value: self.username,
                 projection: ["_id": .excluded, "password": .excluded, "subscriptions": .excluded]
@@ -204,7 +202,7 @@ extension User: Parameterizable {
 extension User: PasswordAuthenticatable {
 
     public static func authenticate(_ creds: Password) throws -> User {
-        let userDoc: Document? = try UsersServices.read(by: "username", value: creds.username, projection: nil)
+        let userDoc = try UsersServices.readOne(by: "username", value: creds.username, projection: nil)
 
         guard let userFound = userDoc else {
             throw Abort(.notFound, reason: "\(creds.username) not found.")
