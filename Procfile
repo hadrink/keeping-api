@@ -1,1 +1,1 @@
-web: munity-api --bind 0.0.0.0:$PORT
+web: .build/release/KeepinAPI --env=$ENVIRONMENT --port=$PORT
