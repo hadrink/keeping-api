@@ -9,10 +9,25 @@ import Foundation
 import Vapor
 
 struct KIDatabase {
-    static let connect: Database = {
+    static var db: Database = try! connect()
+
+    static func connect() throws -> Database {
         let config = try! Config()
-        return try! Database(config["mongodb", "uri"]?.string ?? config["server", "mongo_uri"]!.string!)
-    }()
+        guard let databaseUser = config["mongodb", "database_user"]?.string ?? config["server", "database_user"]?.string else {
+            throw Abort(.internalServerError, reason: "DATABASE_USER is missing")
+        }
+
+        guard let databasePwd = config["mongodb", "database_password"]?.string ?? config["server", "database_password"]?.string else {
+            throw Abort(.internalServerError, reason: "DATABASE_PASSWORD is missing")
+        }
+
+        guard let databaseURI = config["mongodb", "database_uri"]?.string ?? config["server", "database_uri"]?.string else {
+            throw Abort(.internalServerError, reason: "DATABASE_URI is missing")
+        }
+
+        let databaseUrl = "mongodb://\(databaseUser):\(databasePwd)@\(databaseURI)"
+        return try! Database(databaseUrl)
+    }
 }
 
 

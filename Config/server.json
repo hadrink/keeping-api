@@ -1,5 +1,8 @@
 {
     "host": "0.0.0.0",
     "port": 8080,
-    "mongo_uri": "mongodb://$DATABASE_USER:$DATABASE_PASSWORD@$DATABASE_URI"
+    "mongo": "mongodb://$DATABASE_USER:$DATABASE_PASSWORD@$DATABASE_URI",
+    "database_user": "$DATABASE_USER",
+    "database_password": "$DATABASE_PASSWORD",
+    "database_uri": "$DATABASE_URI"
 }

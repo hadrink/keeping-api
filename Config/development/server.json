@@ -1,5 +1,7 @@
 {
     "host": "127.0.0.1",
     "port": "$PORT",
-    "mongo_uri": "mongodb://$DATABASE_USER:$DATABASE_PASSWORD@$DATABASE_URI"
+    "database_user": "$DATABASE_USER",
+    "database_password": "$DATABASE_PASSWORD",
+    "database_uri": "$DATABASE_URI"
 }
