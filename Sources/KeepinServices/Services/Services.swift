@@ -13,6 +13,7 @@ public enum ServicesErrors: Error {
     case subscribe
     case unsubscribe
     case getCommunities
+    case searchCommunities
     case getCommunity
     case getSpace
     case create

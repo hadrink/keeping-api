@@ -30,5 +30,20 @@ class CommunityTests: XCTestCase {
             XCTFail()
         }
     }
+
+    func testSearchCommunitiesByNameSuccess() throws {
+        let value = "test"
+        let communities = try Community.searchCommunitiesByName(from: value)
+        XCTAssertTrue(try communities.makeResponse().status == .ok)
+    }
+
+    func testSearchCommunitiesByNameNotFound() throws {
+        let value = "nowayicallmycommunitylikethatintest"
+        do {
+            _ = try Community.searchCommunitiesByName(from: value)
+        } catch let e as AbortError {
+            XCTAssertTrue(e.status == .notFound)
+        }
+    }
 }
 

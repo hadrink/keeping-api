@@ -32,11 +32,13 @@ final class MainRoutes: RouteCollection {
         let errorHandler = api.grouped(errorMiddleware)
         let v1 = errorHandler.grouped("v1")
         let secured = v1.grouped(tokenMiddleware)
+        let communities = v1.grouped(Community.uniqueSlug)
 
         // Public resources
         v1.post("register", handler: userController.register)
         v1.post("login", handler: userController.login)
         v1.post("logout", handler: userController.logout)
+        communities.get("search", handler: communityController.search)
         v1.resource(Community.uniqueSlug, communityController)
         v1.resource(Space.uniqueSlug, spaceController)
 

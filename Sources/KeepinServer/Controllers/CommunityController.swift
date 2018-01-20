@@ -67,6 +67,19 @@ final class CommunityController {
         let user = try req.user()
         return try Community(name: name, admin: user).create()
     }
+
+    /**
+     Search community by name.
+     - parameter req: The HTTP request (Request).
+     - returns: A ResponseReprentable object.
+     */
+    func search(_ req: Request) throws -> ResponseRepresentable {
+        guard let name = req.data["name"]?.string else {
+            throw Abort(.badRequest, reason: "Name is missing")
+        }
+
+        return try Community.searchCommunitiesByName(from: name)
+    }
 }
 
 /// Resource Representable extension for User Controller.

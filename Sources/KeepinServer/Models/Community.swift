@@ -102,6 +102,26 @@ public final class Community {
             throw Abort(.internalServerError, reason: reason)
         }
     }
+
+    /**
+     Search communities by name from value.
+     - parameter value: A string value.
+
+     - returns: A JSON String response.
+     */
+    static func searchCommunitiesByName(from value: String) throws -> ResponseRepresentable {
+        do {
+            let communities = try CommunityServices.searchCommunitiesByName(from: value)
+            guard try communities.count() > 0 else {
+                throw Abort(.notFound, reason: "No result found")
+            }
+
+            return communities.makeDocument().makeExtendedJSONString()
+        } catch ServicesErrors.searchCommunities {
+            let reason = "A problem is occured when we try to search communities."
+            throw Abort(.internalServerError, reason: reason)
+        }
+    }
 }
 
 /// Commnunity extension type of Parameterizable.

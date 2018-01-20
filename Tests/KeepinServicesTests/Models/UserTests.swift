@@ -17,9 +17,6 @@ class UserTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-
-        self.db = try? KIEnvironment.prod.database()
-        self.collection = db?[KICollections.users.rawValue]
     }
 
 //    /**

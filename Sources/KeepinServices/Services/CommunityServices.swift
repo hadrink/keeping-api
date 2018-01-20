@@ -60,4 +60,19 @@ public struct CommunityServices: Services {
         }
     }
 
+    /**
+     Search communities by name.
+     - parameter name: Communities name.
+     - returns: A document with communities.
+     */
+    public static func searchCommunitiesByName(from value: String) throws -> CollectionSlice<Document> {
+        do {
+            let query = Query(aqt: AQT.contains(key: "name", val: value, options: .caseInsensitive))
+            return try self.collection.find(query, projecting: ["_id": .excluded])
+        } catch let e {
+            print("Search communities error \(e)")
+            throw ServicesErrors.searchCommunities
+        }
+    }
+
 }
