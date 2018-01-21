@@ -106,12 +106,12 @@ public final class Community {
     /**
      Search communities by name from value.
      - parameter value: A string value.
-
+     - parameter limit: Nb max results.
      - returns: A JSON String response.
      */
-    static func searchCommunitiesByName(from value: String) throws -> ResponseRepresentable {
+    static func searchCommunitiesByName(from value: String, limitedTo limit: Int? = nil) throws -> ResponseRepresentable {
         do {
-            let communities = try CommunityServices.searchCommunitiesByName(from: value)
+            let communities = try CommunityServices.searchCommunitiesByName(from: value, limitedTo: limit)
             guard try communities.count() > 0 else {
                 throw Abort(.notFound, reason: "No result found")
             }

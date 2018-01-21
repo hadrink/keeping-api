@@ -63,12 +63,13 @@ public struct CommunityServices: Services {
     /**
      Search communities by name.
      - parameter name: Communities name.
+     - parameter limit: Nb max results.
      - returns: A document with communities.
      */
-    public static func searchCommunitiesByName(from value: String) throws -> CollectionSlice<Document> {
+    public static func searchCommunitiesByName(from value: String, limitedTo limit: Int? = nil) throws -> CollectionSlice<Document> {
         do {
             let query = Query(aqt: AQT.contains(key: "name", val: value, options: .caseInsensitive))
-            return try self.collection.find(query, projecting: ["_id": .excluded])
+            return try self.collection.find(query, projecting: ["_id": .excluded], limitedTo: limit)
         } catch let e {
             print("Search communities error \(e)")
             throw ServicesErrors.searchCommunities

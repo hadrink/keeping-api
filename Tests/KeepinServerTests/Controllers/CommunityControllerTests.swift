@@ -21,7 +21,7 @@ class CommunityControllerTests: XCTestCase {
 
     func testSearchRequestSuccess() throws {
         let search = "test"
-        let res = try drop?.request(.get, "/api/v1/communities/search?name=\(search)")
+        let res = try drop?.request(.get, "/api/v1/communities/search?name=\(search)&limit=5")
         guard let bytes = res?.body.bytes else {
             XCTFail()
             return
@@ -42,6 +42,7 @@ class CommunityControllerTests: XCTestCase {
             return name?.range(of: search) != nil
         })
 
+        XCTAssertTrue(names.count == 5)
         XCTAssertTrue(namesContainsSearchValue)
         XCTAssertTrue(res?.status == .ok)
     }

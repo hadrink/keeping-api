@@ -78,7 +78,8 @@ final class CommunityController {
             throw Abort(.badRequest, reason: "Name is missing")
         }
 
-        return try Community.searchCommunitiesByName(from: name)
+        let limit = req.data["limit"]?.int
+        return try Community.searchCommunitiesByName(from: name, limitedTo: limit)
     }
 }
 

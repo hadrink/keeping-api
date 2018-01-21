@@ -22,16 +22,20 @@ class CommunityServicesTests: XCTestCase {
 
     func testSearchCommunitiesByNameSuccess() throws {
         let value = "test"
-        let communities = try CommunityServices.searchCommunitiesByName(from: value)
-        let found = communities.contains{String($0["name"]) == value }
-        XCTAssertTrue(found)
+        let communities = try CommunityServices.searchCommunitiesByName(from: value, limitedTo: 5)
+        let namesContainsSearchValue = communities.reduce(true, { result, community in
+            guard result else { return result }
+            return String(describing: community["name"]).range(of: value) != nil
+        })
+
+        XCTAssertTrue(communities.limit == 5)
+        XCTAssertTrue(namesContainsSearchValue)
     }
 
     func testSearchCommunitiesByNameFail() throws {
         let value = "nowayicallmycommunitylikethatintest"
         let communities = try CommunityServices.searchCommunitiesByName(from: value)
-        let found = communities.contains{String($0["name"]) == "test" }
-        XCTAssertFalse(found)
+        XCTAssertTrue(try communities.count() == 0)
     }
 }
 
