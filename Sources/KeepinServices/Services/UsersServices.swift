@@ -18,10 +18,10 @@ public struct UsersServices: Services {
      - parameter username: Unique username.
      - parameter communityName: Unique communityName
      */
-    public static func subscribe(username: String, to communityName: String) throws {
+    public static func subscribe(usernameId: String, to communityNameId: String) throws {
         do {
-            let c: Document? = try CommunityServices.readOne(by: "name", value: communityName, projection: nil)
-            try collection.update("username" == username, to: [
+            let c: Document? = try CommunityServices.readOne(by: "name_id", value: communityNameId, projection: nil)
+            try collection.update("username_id" == usernameId, to: [
                 "$addToSet": [
                     "subscriptions": c
                 ]
@@ -38,10 +38,10 @@ public struct UsersServices: Services {
      - parameter username: Unique username.
      - parameter communityName: Unique communityName
      */
-    public static func unsubscribe(username: String, from communityName: String) throws {
+    public static func unsubscribe(usernameId: String, from communityNameId: String) throws {
         do {
-            let c: Document? = try CommunityServices.readOne(by: "name", value: communityName, projection: nil)
-            try collection.update("username" == username, to: [
+            let c: Document? = try CommunityServices.readOne(by: "name_id", value: communityNameId, projection: nil)
+            try collection.update("username_id" == usernameId, to: [
                 "$pull": [
                     "subscriptions": c
                 ]
@@ -59,12 +59,12 @@ public struct UsersServices: Services {
      - parameter username: Unique username.
      - returns: A list of community documents.
      */
-    public static func getSubscriptions(from username: String) throws -> Document? {
+    public static func getSubscriptions(from usernameId: String) throws -> Document? {
         do {
             var projection: Projection = ["subscriptions": .included]
             projection.suppressIdentifier()
 
-            let document: Document? = try self.readOne(by: "username", value: username, projection: projection)
+            let document: Document? = try self.readOne(by: "username_id", value: usernameId, projection: projection)
             let embeddedSubs = Document(document?["subscriptions"])
             let embeddedSubsWithoutId = embeddedSubs.map({(document: Document) -> [Document?] in
                 return document.map({(value: Document.Element) -> Document? in

@@ -34,7 +34,7 @@ public final class Space {
      - returns: A JSON String response.
      */
     public func get() throws -> ResponseRepresentable {
-        guard let spaceDocument: Document = try SpaceServices.getSpace(from: community.name) else {
+        guard let spaceDocument: Document = try SpaceServices.getSpace(from: community.nameId) else {
             throw Abort(.notFound, reason: "\(community.name) space not found.")
         }
 
@@ -48,7 +48,7 @@ public final class Space {
      - returns: A JSON String response.
      */
     public func create() throws -> ResponseRepresentable {
-        guard let communityDocument: Document = try CommunityServices.get(by: community.name) else {
+        guard let communityDocument: Document = try CommunityServices.get(by: community.nameId) else {
             throw Abort(.notFound, reason: "\(community.name) not found.")
         }
 
@@ -71,7 +71,7 @@ public final class Space {
      */
     public func insert(message: String, by user: User) throws -> ResponseRepresentable {
         do {
-            try SpaceServices.insert(message: message, in: community.name, by: user.username)
+            try SpaceServices.insert(message: message, in: community.nameId, by: user.usernameId)
         } catch ServicesErrors.update {
             let r = "A problem is occured when we try to insert '\(message)'in \(community.name) space"
             throw Abort(.internalServerError, reason: r)

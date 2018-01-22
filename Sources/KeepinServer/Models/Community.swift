@@ -24,13 +24,20 @@ public final class Community {
     var admin: User?
 
     /**
+     The community identifier (String).
+     */
+    var nameId: String {
+        return self.name.lowercased()
+    }
+
+    /**
      Init community object.
 
      - parameter name: The community name (String).
      - parameter owner: The password (String?).
      */
     public init(name: String, admin: User? = nil) {
-        self.name = name.lowercased()
+        self.name = name
         self.admin = admin
     }
 
@@ -42,7 +49,7 @@ public final class Community {
      */
     public func get() throws -> ResponseRepresentable {
         do {
-            guard let communityDocument = try CommunityServices.readOne(by: "name", value: self.name) else {
+            guard let communityDocument = try CommunityServices.readOne(by: "name_id", value: self.nameId) else {
                 throw Abort(.notFound, reason: "\(self.name) not found.")
             }
 
@@ -64,13 +71,14 @@ public final class Community {
             throw Abort(.unauthorized, reason: "Missing admin user")
         }
 
-        let existingCommunity = try CommunityServices.readOne(by: "name", value: self.name)
+        let existingCommunity = try CommunityServices.readOne(by: "name_id", value: self.nameId)
         guard existingCommunity == nil else {
             let reason = "Community \(self.name) already exist"
             throw Abort(.unauthorized, reason: reason)
         }
 
         let communityDocument: Document = [
+            "name_id": self.nameId,
             "name": self.name,
             "admin": admin.username
         ]
@@ -87,12 +95,12 @@ public final class Community {
      - returns: A JSON String response.
      */
     static func get(communities: Array<Community>) throws -> ResponseRepresentable {
-        let names = communities.map({(community: Community) -> String in
-            return community.name
+        let nameIds = communities.map({(community: Community) -> String in
+            return community.nameId
         })
 
         do {
-            guard let communities = try CommunityServices.getCommunities(by: names) else {
+            guard let communities = try CommunityServices.getCommunities(by: nameIds) else {
                 throw Abort(.notFound, reason: "Communities not found.")
             }
 
@@ -111,7 +119,8 @@ public final class Community {
      */
     static func searchCommunitiesByName(from value: String, limitedTo limit: Int? = nil) throws -> ResponseRepresentable {
         do {
-            let communities = try CommunityServices.searchCommunitiesByName(from: value, limitedTo: limit)
+            let user = try User(username: value)
+            let communities = try CommunityServices.searchCommunitiesByNameId(from: user.usernameId, limitedTo: limit)
             guard try communities.count() > 0 else {
                 throw Abort(.notFound, reason: "No result found")
             }

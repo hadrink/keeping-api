@@ -22,7 +22,7 @@ class CommunityServicesTests: XCTestCase {
 
     func testSearchCommunitiesByNameSuccess() throws {
         let value = "test"
-        let communities = try CommunityServices.searchCommunitiesByName(from: value, limitedTo: 5)
+        let communities = try CommunityServices.searchCommunitiesByNameId(from: value, limitedTo: 5)
         let namesContainsSearchValue = communities.reduce(true, { result, community in
             guard result else { return result }
             return String(describing: community["name"]).range(of: value) != nil
@@ -34,7 +34,7 @@ class CommunityServicesTests: XCTestCase {
 
     func testSearchCommunitiesByNameFail() throws {
         let value = "nowayicallmycommunitylikethatintest"
-        let communities = try CommunityServices.searchCommunitiesByName(from: value)
+        let communities = try CommunityServices.searchCommunitiesByNameId(from: value)
         XCTAssertTrue(try communities.count() == 0)
     }
 }

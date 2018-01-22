@@ -19,9 +19,9 @@ public struct SpaceServices: Services {
      - parameter admin: The admintrator.
      - returns: A list of community documents.
      */
-    public static func getSpace(from communityName: String) throws -> Document? {
+    public static func getSpace(from communityNameId: String) throws -> Document? {
         do {
-            let space: Document? = try self.readOne(by: "community.name", value: communityName)
+            let space: Document? = try self.readOne(by: "community.name_id", value: communityNameId)
             return space
         } catch let e {
             print("Get space error \(e)")
@@ -51,7 +51,7 @@ public struct SpaceServices: Services {
      - parameter communityName: The associate community name (String).
      - parameter username: The emetter (String).
      */
-    public static func insert(message: String, in communityName: String, by username: String) throws {
+    public static func insert(message: String, in communityNameId: String, by username: String) throws {
         do {
             let messageDocument: Document = [
                 "id": ObjectId(),
@@ -59,7 +59,7 @@ public struct SpaceServices: Services {
                 "username": username,
                 "content": message
             ]
-            try collection.update("community.name" == communityName, to: [
+            try collection.update("community.name_id" == communityNameId, to: [
                 "$addToSet": [
                     "messages": messageDocument
                 ]

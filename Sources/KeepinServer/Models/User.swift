@@ -28,6 +28,13 @@ public final class User {
     var username: String
 
     /**
+     Username id (String).
+     */
+    var usernameId: String {
+        return self.username.lowercased()
+    }
+
+    /**
      Email (String).
      */
     var email: String?
@@ -44,7 +51,7 @@ public final class User {
      - parameter password: The password (String?).
      */
     public init(username: String, email: String? = nil, password: String? = nil) throws {
-        self.username = username.lowercased()
+        self.username = username
         self.email = email
         self.password = password
 
@@ -60,7 +67,7 @@ public final class User {
      Insert user in database.
      */
     public func create() throws -> ResponseRepresentable {
-        let existingUser = try UsersServices.readOne(by: "username", value: self.username)
+        let existingUser = try UsersServices.readOne(by: "username_id", value: self.usernameId)
         guard existingUser == nil else {
             let reason = "Username \(self.username) already exist"
             throw Abort(.unauthorized, reason: reason)
@@ -68,6 +75,7 @@ public final class User {
 
         let passwordHash = try BCrypt.Hash.make(message: self.password!)
         let userDocument: Document = [
+            "username_id": self.usernameId,
             "username": self.username,
             "password": passwordHash.makeString()
         ]
@@ -82,7 +90,7 @@ public final class User {
     public func get() throws -> ResponseRepresentable {
         do {
             guard let userDocument = try UsersServices.readOne(
-                by: "username",
+                by: "username_id",
                 value: self.username,
                 projection: ["_id": .excluded, "password": .excluded, "subscriptions": .excluded]
             ) else {
@@ -101,7 +109,7 @@ public final class User {
      */
     public func getSubscriptions() throws -> ResponseRepresentable {
         do {
-            guard let commmunitiesCollection = try UsersServices.getSubscriptions(from: self.username) else {
+            guard let commmunitiesCollection = try UsersServices.getSubscriptions(from: self.usernameId) else {
                 throw Abort(.notFound, reason: "\(self.username) not found.")
             }
 
@@ -121,7 +129,7 @@ public final class User {
      */
     public func unsubscribe(from community: Community) throws -> ResponseRepresentable {
         do {
-            try UsersServices.unsubscribe(username: self.username, from: community.name)
+            try UsersServices.unsubscribe(usernameId: self.usernameId, from: community.nameId)
         } catch ServicesErrors.unsubscribe {
             let reason = "A problem is occured when we try to unsusbscribe \(self.username) to \(community.name)"
             throw Abort(.internalServerError, reason: reason)
@@ -138,7 +146,7 @@ public final class User {
      */
     public func subscribe(to community: Community) throws -> ResponseRepresentable {
         do {
-            try UsersServices.subscribe(username: self.username, to: community.name)
+            try UsersServices.subscribe(usernameId: self.usernameId, to: community.nameId)
         } catch ServicesErrors.subscribe {
             let reason = "A problem is occured when we try to susbscribe \(self.username) to \(community.name)"
             throw Abort(.internalServerError, reason: reason)
@@ -153,7 +161,7 @@ public final class User {
      */
     public func getMyCommunities() throws -> ResponseRepresentable {
         do {
-            guard let mine = try CommunityServices.getCommunities(from: self.username) else {
+            guard let mine = try CommunityServices.getCommunities(from: self.usernameId) else {
                 throw Abort(.notFound, reason: "\(self.username) not found.")
             }
 
@@ -173,7 +181,7 @@ public final class User {
      */
     public func isAdmin(community: Community) throws -> Bool {
         do {
-            let c = try CommunityServices.get(by: community.name)
+            let c = try CommunityServices.get(by: community.nameId)
             return String(c?["admin"]) == self.username
         } catch ServicesErrors.getCommunity {
             let reason = "A problem is occured we try to get \(self.username) communities"
