@@ -16,7 +16,7 @@ final class Room {
     /**
      Connections.
      */
-    var connections: [String: WebSocket] = [:]
+    var connections: [SocketConnection] = []
 
     /**
      Some messages in cache.
@@ -74,8 +74,8 @@ final class Room {
 
         self.lastMessageReceived = json
 
-        for (username, socket) in connections {
-            try? socket.send(json)
+        for connection in connections {
+            try? connection.socket.send(json)
         }
 
     }
@@ -103,12 +103,42 @@ final class Room {
             return
         }
 
-        for (username, socket) in connections {
-            try? socket.send(json)
+        for connection in connections {
+            try? connection.socket.send(json)
         }
     }
 
     init(roomName: String) {
         self.roomName = roomName
+    }
+}
+
+/// Socket connection
+class SocketConnection {
+    /**
+     Unique identifier (String).
+     */
+    var id: String = UUID().uuidString
+
+    /**
+     Username (String).
+     */
+    var username: String?
+
+    /**
+     Web socket (WebSocket).
+     */
+    var socket: WebSocket
+
+    /**
+     Init.
+     - parameter id: Unique identifier (String).
+     - parameter username: Username (String?)
+     - parameter socket: Web socket (WebSocket)
+     */
+    init(id: String = UUID().uuidString, username: String? = nil, socket: WebSocket) {
+        self.username = username
+        self.socket = socket
+        self.id = id
     }
 }

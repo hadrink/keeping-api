@@ -33,9 +33,8 @@ final class ChatController {
      */
     func handler(req: Request, ws: WebSocket) {
         var pingTimer: DispatchSourceTimer?
-        var validUsername: String?
-        var randomUsername: String?
         var room: Room?
+        var connection: SocketConnection?
 
         pingTimer = DispatchSource.makeTimerSource()
         pingTimer?.schedule(deadline: .now(), repeating: .seconds(25))
@@ -53,24 +52,24 @@ final class ChatController {
             room = roomsFound.count > 0 ? roomsFound.first : Room(roomName: roomName)
             self.rooms.append(room!)
 
-            if validUsername == nil, let token = json.object?["token"]?.string {
+            if connection == nil, let token = json.object?["token"]?.string {
                 let user = try User.authenticate(Token(string: token))
-                validUsername = user.username
-                room?.connections[user.username] = ws
+                connection = SocketConnection(username: user.username, socket: ws)
+                room?.connections.append(connection!)
                 room?.sendMessagesInCacheTo(socket: ws)
             }
 
-            if randomUsername == nil, json.object?["token"] == nil {
-                randomUsername = UUID().uuidString
-                room?.connections[randomUsername!] = ws
+            if connection == nil, json.object?["token"] == nil {
+                let connection = SocketConnection(socket: ws)
+                room?.connections.append(connection)
                 room?.sendMessagesInCacheTo(socket: ws)
             }
 
-            if let u = validUsername, let m = json.object?["message"]?.string {
+            if let u = connection?.username, let m = json.object?["message"]?.string {
                 room?.sendBy(name: u, message: m)
             }
 
-            if let u = validUsername, let n = json.object?["notification"]?.string, let r = room {
+            if let u = connection?.username, let n = json.object?["notification"]?.string, let r = room {
                 let user = try User(username: u)
                 let community = Community(name: r.roomName)
 
@@ -86,7 +85,7 @@ final class ChatController {
             pingTimer?.cancel()
             pingTimer = nil
 
-            guard let u = validUsername ?? randomUsername else {
+            guard let c = connection else {
                 return
             }
 
@@ -94,8 +93,13 @@ final class ChatController {
                 return
             }
 
-            room?.bot("\(u) has left the \(r) community.")
-            room?.connections.removeValue(forKey: u)
+            room?.bot("\(String(describing: c.username)) has left the \(r) community.")
+
+            guard let connectionId = room?.connections.index(where: {$0.id == connection?.id}) else {
+                return
+            }
+
+            room?.connections.remove(at: connectionId)
 
             guard room?.connections.count == 0 else {
                 return
