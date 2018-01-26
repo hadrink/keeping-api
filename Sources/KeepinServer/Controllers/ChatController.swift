@@ -60,8 +60,8 @@ final class ChatController {
             }
 
             if connection == nil, json.object?["token"] == nil {
-                let connection = SocketConnection(socket: ws)
-                room?.connections.append(connection)
+                connection = SocketConnection(socket: ws)
+                room?.connections.append(connection!)
                 room?.sendMessagesInCacheTo(socket: ws)
             }
 
