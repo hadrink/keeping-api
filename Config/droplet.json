@@ -2,4 +2,6 @@
 "middleware": [
        "cors"
    ],
+"hash": "crypto",
+"cipher": "crypto"
 }
