@@ -29,7 +29,7 @@ extension Droplet {
      - returns: A token JWT (String).
      */
     public func createJwtToken(_ username: String)  throws -> String {
-        let timeToLive = 60.0 * 60.0 // 1h
+        let timeToLive = 60.0 * 60.0 * 24 // 24h
         let claims:[Claim] = [
             ExpirationTimeClaim(date: Date().addingTimeInterval(timeToLive)),
             SubjectClaim(string: username)
