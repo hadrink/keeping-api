@@ -21,8 +21,7 @@ class UserControllerTests: XCTestCase {
     }
 
     func testRegisterRequestSuccess() throws {
-        let randomNumber = Int(arc4random_uniform(1000000000))
-        let user = "User\(String(randomNumber))"
+        let user = String.randomText(length: 10)
 
         let bodyJSON: JSON = [
             "username": .string(user),

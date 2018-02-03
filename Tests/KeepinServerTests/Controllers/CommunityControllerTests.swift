@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import Vapor
+import HTTP
 
 @testable import KeepinServer
 
@@ -51,6 +52,37 @@ class CommunityControllerTests: XCTestCase {
         let search = "nowayicallmycommunitylikethatintest"
         let res = try drop?.request(.get, "/api/v1/communities/search?name=\(search)")
         XCTAssertTrue(res?.status == .notFound)
+    }
+
+    func testCreateRequestSuccess() throws {
+        let name = String.randomText(length: 10)
+        guard let token = try drop?.createJwtToken("rplay") else {
+            XCTFail()
+            return
+        }
+
+        let bodyJSON: JSON = [
+            "name": .string(name),
+        ]
+
+        let headers: [HeaderKey: String] = [
+            "authorization": "Bearer \(token)",
+            "content-type":"application/json"
+        ]
+
+        let body = bodyJSON.makeBody()
+        let res = try drop?.request(
+            .post, "/api/v1/communities",
+            query: [:],
+            headers,
+            body,
+            through: []
+        )
+
+        guard res?.status == .ok else {
+            XCTFail()
+            return
+        }
     }
 }
 
