@@ -91,7 +91,7 @@ public final class User {
         do {
             guard let userDocument = try UsersServices.readOne(
                 by: "username_id",
-                value: self.username,
+                value: self.usernameId,
                 projection: ["_id": .excluded, "password": .excluded, "subscriptions": .excluded]
             ) else {
                 throw Abort(.notFound, reason: "\(self.username) not found.")
