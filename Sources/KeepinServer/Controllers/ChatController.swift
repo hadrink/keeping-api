@@ -93,7 +93,9 @@ final class ChatController {
                 return
             }
 
-            room?.bot("\(String(describing: c.username)) has left the \(r) community.")
+            if drop?.config.environment == .development {
+                room?.bot("\(String(describing: c.username)) has left the \(r) community.")
+            }
 
             guard let connectionId = room?.connections.index(where: {$0.id == connection?.id}) else {
                 return

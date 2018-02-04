@@ -10,10 +10,6 @@
 // For example: swift build -c debug -Xswiftc -DQA
 import KeepinServer
 
-#if QA
-print("hello, world");
-#endif
-
 try config?.setup()
 try drop?.setup()
 
@@ -23,3 +19,4 @@ let host = drop?.config["server", "host"]?.string ?? "0.0.0.0"
 let port = drop?.config["server", "port"]?.int ?? 8080
 
 try drop?.run()
+
